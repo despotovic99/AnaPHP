@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./docker/bin/php
+    container_name: 'ana_php'
+    restart: 'always'
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - database
+    volumes:
+      - ./:/var/www/html
+      - ./docker/config/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/config/vhosts:/etc/apache2/sites-enabled
+      - ./docker/logs/apache2:/var/log/apache2
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/html
+      MYSQL_ROOT_PASSWORD: 'anaphp'
+  database:
+    build:
+      context: "./docker/bin/mysql"
+    container_name: 'ana_mysql'
+    restart: 'always'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+      - ./docker/logs/mysql:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'anaphp'
+      MYSQL_DATABASE: 'anaphp'
