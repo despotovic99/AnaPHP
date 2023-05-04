@@ -34,7 +34,7 @@ const RegisterPage = () => {
                    required={true}/>
         </div>
         <div className={'buttons-container'}>
-            <button className={'button-secondary'}>Register</button>
+            <button className={'button-secondary register-button'}>Register</button>
             <div className={'change-section-buttons-container'}>
                 <h4 onClick={() => navigate('/login')}>Already have an account? Sign in</h4>
             </div>

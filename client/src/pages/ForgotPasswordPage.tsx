@@ -10,7 +10,7 @@ const ForgotPasswordPage = () => {
         </div>
 
         <div className={'buttons-container'}>
-            <button className={'button-secondary'}>Send email</button>
+            <button className={'button-secondary login-button'}>Send email</button>
             <h4 onClick={() => navigate('/login')}>Return to sign in?</h4>
         </div>
     </div>)

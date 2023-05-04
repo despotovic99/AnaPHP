@@ -17,7 +17,7 @@ const LoginPage = () => {
             <input className={'input-field'} type={'password'} placeholder={'password'}/>
         </div>
         <div className={'buttons-container'}>
-            <button className={'button-secondary'}>LOGIN</button>
+            <button className={'button-secondary login-button'}>LOGIN</button>
             <div className={'change-section-buttons-container'}>
                 <h4 onClick={() => navigate('/register')}>New here? Register</h4>
                 <h4 onClick={() => navigate('/forgot-password')}>Forgot password?</h4>

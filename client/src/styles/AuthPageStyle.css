@@ -14,7 +14,7 @@
 }
 
 .input-field-container .input-field {
-    padding: 15px 35px 15px 55px;
+    padding: 15px 55px;
     background-color: #2148C0;
     outline: none;
     border: 2px solid white;
@@ -55,12 +55,19 @@
 
 .buttons-container .button-secondary {
     padding: 12px 0;
-    width: 17vw;
     outline: none;
     border: none;
     color: #2148C0;
     font-weight: bolder;
     text-transform: uppercase;
+}
+
+.login-button {
+    width: 15vw;
+}
+
+.register-button {
+    width: 16vw;
 }
 
 .buttons-container h4:hover {
