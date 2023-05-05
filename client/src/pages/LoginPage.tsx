@@ -3,7 +3,6 @@ import '../styles/AuthPageStyle.css'
 import {useNavigate} from "react-router-dom";
 import {LoginDto} from "../common/dtos/auth.interface.dto";
 import {Login} from "../common/models/auth.interface";
-import {Simulate} from "react-dom/test-utils";
 import {AuthContext} from "../store/AuthContext";
 
 
@@ -37,12 +36,20 @@ const LoginPage = () => {
     return (<div className={'page-container'}>
         <form>
             <div className={'input-field-container'}>
-                <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
-                <input ref={usernameRef} className={'input-field'} type={'text'} placeholder={'username'}/>
+                <label className={'input-field-label'}>Username</label>
+                <div className={'icon-container'}>
+                    <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
+                    <input ref={usernameRef} className={'input-field'} type={'text'} placeholder={'pera123'}
+                    />
+                </div>
             </div>
             <div className={'input-field-container'}>
-                <img src={'/assets/lock.png'} className={'icon'} alt={'lock'}/>
-                <input ref={passwordRef} className={'input-field'} type={'password'} placeholder={'password'}/>
+                <label className={'input-field-label'}>Password</label>
+                <div className={'icon-container'}>
+                    <img src={'/assets/lock.png'} className={'icon'} alt={'lock'}/>
+                    <input ref={passwordRef} className={'input-field'} type={'password'} placeholder={'********'}
+                    />
+                </div>
             </div>
             <div className={'buttons-container'}>
                 <input type={'submit'} onClick={loginHandler} className={'button-secondary login-button'}
