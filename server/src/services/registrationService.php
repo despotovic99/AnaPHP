@@ -74,18 +74,103 @@ function registerUser(
                     VALUES (:email,:token)";
         $statement = $db->prepare($query);
 
-        $token = hash('md5', $email);
+        $token = hash('md5', $email . rand());
         $statement->bindParam('email', $email);
         $statement->bindParam('token', $token);
 
         $statement->execute();
 
-        sendEmail($email, 'Aktivacija naloga',
-            'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token='.$token);
+        sendEmail(
+            $email,
+            'Aktivacija naloga',
+            'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token=' . $token
+        );
 
         $db->commit();
     } catch (Exception $e) {
         $db->rollBack();
         throw new Exception('User not registered.');
+    }
+}
+
+
+function activateAccount(string $token): void
+{
+    $db = Database::getConnection();
+    $db->beginTransaction();
+
+    try {
+        $query = "SELECT * FROM pendingEmail WHERE token=:token";
+        $statement = $db->prepare($query);
+        $statement->bindParam('token', $token);
+
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            throw new Exception('Email not found.');
+        }
+        $email = $result['email'];
+
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
+        $query = "UPDATE user SET verifiedAt='$now' WHERE email='$email'";
+        $db->query($query);
+        $query = "DELETE FROM pendingEmail WHERE email='$email'";
+        $db->query($query);
+
+        $db->commit();
+    } catch (Throwable $e) {
+        $db->rollBack();
+        throw new Exception('Account not activated');
+    }
+}
+
+function generateActivationLink(string $username): void
+{
+    $db = Database::getConnection();
+
+    $statement = $db->prepare("SELECT email, verifiedAt FROM user WHERE username=:username");
+    $statement->bindParam('username', $username);
+    $statement->execute();
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$result || $result['verifiedAt']) {
+        throw new Exception('Account already activated.');
+    }
+
+    try {
+        $db->beginTransaction();
+        $email = $result['email'];
+
+        $query = "SELECT * FROM pendingEmail WHERE email=:email AND expiresAt IS NULL";
+        $statement = $db->prepare($query);
+        $statement->bindParam('email', $email);
+        $statement->execute();
+
+        $token = hash('md5', $email . rand());
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $query = "UPDATE pendingEmail SET token='$token' WHERE id='{$result['id']}'";
+            $db->query($query);
+        } else {
+            $query = "INSERT INTO pendingEmail (email,token)
+                    VALUES (:email,:token)";
+            $statement = $db->prepare($query);
+
+            $statement->bindParam('email', $email);
+            $statement->bindParam('token', $token);
+
+            $statement->execute();
+        }
+
+
+        sendEmail(
+            $email,
+            'Aktivacija naloga',
+            'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token=' . $token
+        );
+
+        $db->commit();
+    } catch (Throwable $e) {
+        $db->rollBack();
+        throw new Exception('Activation link not generated');
     }
 }

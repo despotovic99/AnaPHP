@@ -4,13 +4,7 @@ require_once __DIR__ . '/../src/services/util.php';
 require_once __DIR__ . '/../src/services/registrationService.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Bad request',
-        'error' => 'No route found!',
-        'code' => 400
-    ]);
-    die();
+    response('Bad request!', 400, false, 'No route found!');
 }
 
 try {
@@ -34,12 +28,7 @@ try {
         $dateOfBirth
     );
 
-
+    response('User registered successfully, check your email.');
 } catch (Exception $exception) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Bad request',
-        'error' => $exception->getMessage(),
-        'code' => 400
-    ]);
+    response('Bad request', 400, false, $exception->getMessage());
 }
