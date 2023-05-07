@@ -1,7 +1,8 @@
 import React from "react";
-import DashboardPage from "../pages/DashboardPage";
+import UsersPage from "../pages/UsersPage";
 import DrawerContainer from "./DrawerContainer";
 import '../styles/BasicLayoutStyle.css';
+import {ScreenNames} from "../common/constants/ScreenNames";
 
 type BasicLayoutProps = {
     screenName: string
@@ -12,7 +13,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props: BasicLayoutProps) => {
             <DrawerContainer/>
             <div className={'layout-card'}>
                 <div className={'layout-top-stripe'}/>
-                {props.screenName === 'HOME_SCREEN' && <DashboardPage/>}
+                {props.screenName === ScreenNames.usersScreen && <UsersPage/>}
             </div>
         </div>
     )

@@ -1,0 +1,56 @@
+.table {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 0 15px;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px 15px 15px;
+    border-bottom: 3px solid #EFEFED;
+}
+
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+}
+
+.table-row:nth-child(odd) {
+    background: white;
+}
+
+.table-row:nth-child(even) {
+    background: #EFEFED;
+}
+
+.table-row:hover {
+    cursor: pointer;
+    background: #EFEFED;
+}
+
+
+.table-row .action-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-buttons-container .action-button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+}
+
+.action-button-edit {
+    background: #1669BD;
+}
+
+.action-button-delete {
+    background: red;
+}
