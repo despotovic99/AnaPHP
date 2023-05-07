@@ -1,29 +1,25 @@
+import '../styles/DrawerContainerStyle.css'
+import {faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 const DrawerContainer = () => {
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-            width: '10vw',
-            background: '#2148C0',
-        }}>
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                padding: '8vh 3vh'
-            }}>
-                <div>
-                    <p>Home</p>
+        <div className={'drawer-container'}>
+            <div className={'drawer-items-container'}>
+                <div className={'drawer-item-container inactive'}>
+                    <FontAwesomeIcon icon={faUser} className={'icon'}/>
+                    <p>Users</p>
                 </div>
-                <div>
+                <div className={'drawer-item-container inactive'}>
+                    <FontAwesomeIcon icon={faTasks} className={'icon'}/>
                     <p>Tasks</p>
                 </div>
-                <div>
+                <div className={'drawer-item-container inactive'}>
+                    <FontAwesomeIcon icon={faObjectGroup} className={'icon'}/>
                     <p>Task Groups</p>
                 </div>
-                <div>
+                <div className={'drawer-item-container active'}>
+                    <FontAwesomeIcon icon={faSignOut} className={'icon'}/>
                     <p>Logout</p>
                 </div>
             </div>
