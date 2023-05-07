@@ -27,6 +27,10 @@
     font-size: 20px;
 }
 
+.drawer-item-container:hover {
+    cursor: pointer;
+}
+
 .drawer-item-container .icon {
     width: 25px;
     height: 25px;

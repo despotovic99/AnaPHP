@@ -13,12 +13,14 @@ const LoginPage = () => {
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
-    const loginHandler = async () => {
+    const loginHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         const loginDto: LoginDto = {
             username: usernameRef.current?.value!,
             password: passwordRef.current?.value!
         }
         try {
+            console.log(loginDto);
             //TODO call api
             await localStorage.setItem('loggedIn', 'true');
             const loginObject: Login = {
@@ -34,7 +36,7 @@ const LoginPage = () => {
     };
 
     return (<div className={'page-container'}>
-        <form>
+        <form onSubmit={loginHandler}>
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Username</label>
                 <div className={'icon-container'}>
@@ -52,7 +54,7 @@ const LoginPage = () => {
                 </div>
             </div>
             <div className={'buttons-container'}>
-                <input type={'submit'} onClick={loginHandler} className={'button-secondary login-button'}
+                <input type={'submit'} className={'button-secondary login-button'}
                        value={'LOGIN'}/>
                 <div className={'change-section-buttons-container'}>
                     <h4 onClick={() => navigate('/register')}>New here? Register</h4>
