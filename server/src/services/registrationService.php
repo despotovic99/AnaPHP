@@ -23,10 +23,16 @@ function registerUser(
     }
     $password = hash('md5', $password);
 
-    $query = "SELECT * FROM user WHERE username LIKE '$username' OR email LIKE '$email';";
+    $query = "SELECT * FROM user WHERE username LIKE '$username';";
     $result = $db->query($query);
     if (!empty($result->fetchAll())) {
-        throw new Exception('Username and email should be unique.');
+        throw new Exception('Username is already taken.');
+    }
+
+    $query = "SELECT * FROM user WHERE email LIKE '$email';";
+    $result = $db->query($query);
+    if (!empty($result->fetchAll())) {
+        throw new Exception('Email is already taken.');
     }
 
     $query = "SELECT * FROM userRole WHERE name='Izvrsilac'";
