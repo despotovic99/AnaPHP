@@ -103,8 +103,8 @@ function activateAccount(string $token): void
         $query = "SELECT * FROM pendingEmail WHERE token=:token";
         $statement = $db->prepare($query);
         $statement->bindParam('token', $token);
-
         $statement->execute();
+
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!$result) {
             throw new Exception('Email not found.');
