@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../src/services/util.php';
-require_once __DIR__ . '/../src/services/registrationService.php';
+require_once __DIR__ . '/../src/services/user/userService.php';
+require_once __DIR__ . '/../src/db/Database.php';
 
 checkRequestType();
 
@@ -15,18 +16,26 @@ try {
     $phoneNumber = getDataFromPostRequest('phoneNumber', false);
     $dateOfBirth = getDataFromPostRequest('dateOfBirth', false);
 
-    registerUser(
+
+    if ($password != $confirmedPassword) {
+        sendResponse(['message' => 'Bad Request', 'error' => 'Passwords does not match!', 400, false]);
+    }
+
+    $result = registerUser(
         $username,
         $email,
         $password,
-        $confirmedPassword,
         $firstName,
         $lastName,
         $phoneNumber,
         $dateOfBirth
     );
 
-    response(['message' => 'User registered successfully, check your email.']);
+    if (true !== $result) {
+        sendResponse(['message' => 'Bad request', 'error' => $result], 400, false);
+    }
+
+    sendResponse(['message' => 'User registered successfully, check your email.']);
 } catch (Exception $exception) {
-    response(['message' => 'Bad request', 'error' => $exception->getMessage()], 400, false);
+    sendResponse(['message' => 'Server error'], 500, false);
 }

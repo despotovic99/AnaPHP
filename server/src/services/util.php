@@ -12,7 +12,7 @@ function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string
     return htmlspecialchars(trim($data));
 }
 
-function response(array $data, int $status = 200, bool $success = true): void
+function sendResponse(array $data, int $status = 200, bool $success = true): void
 {
     $response = [
         'success' => $success,
@@ -31,6 +31,6 @@ function response(array $data, int $status = 200, bool $success = true): void
 function checkRequestType(string $type = 'POST')
 {
     if ($_SERVER['REQUEST_METHOD'] !== $type) {
-        response(['message' => 'Bad request!', 'error' => 'No route found!'], 400, false);
+        sendResponse(['message' => 'Bad request!', 'error' => 'No route found!'], 400, false);
     }
 }

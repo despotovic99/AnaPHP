@@ -6,7 +6,7 @@ require_once __DIR__ . '/../src/db/Database.php';
 checkRequestType('GET');
 
 if (empty($_GET['token'])) {
-    response(['message' => 'Bad request', 'error' => 'Token missing.'], 400, false);
+    sendResponse(['message' => 'Bad request', 'error' => 'Token missing.'], 400, false);
 }
 
 $token = htmlspecialchars(trim($_GET['token']));
@@ -20,7 +20,7 @@ try {
 
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$result) {
-        response(['message' => 'Bad request', 'error' => 'Email not found.'], 500, false);
+        sendResponse(['message' => 'Bad request', 'error' => 'Email not found.'], 500, false);
     }
     $email = $result['email'];
 
@@ -31,8 +31,8 @@ try {
     $db->query($query);
 
     $db->commit();
-
-    response(['message' => 'Account activated']);
+    sendResponse(['message' => 'Account activated']);
 } catch (Exception $e) {
-    response(['message' => 'Server error'], 500, false);
+    $db->rollBack();
+    sendResponse(['message' => 'Server error'], 500, false);
 }

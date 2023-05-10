@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../src/db/Database.php';
 require_once __DIR__ . '/../src/services/util.php';
-require_once __DIR__ . '/../src/services/mail/mailService.php';
+require_once __DIR__ . '/../src/services/user/userService.php';
 
 checkRequestType();
 
@@ -15,7 +15,7 @@ try {
     $statement->execute();
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$result || $result['verifiedAt']) {
-        response(['message' => 'Bad request', 'error' => 'Account already activated.'], 400, false);
+        sendResponse(['message' => 'Bad request', 'error' => 'Account already activated.'], 400, false);
     }
 
     $db->beginTransaction();
@@ -42,15 +42,11 @@ try {
         $statement->execute();
     }
 
-    sendEmail(
-        $email,
-        'Aktivacija naloga',
-        'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token=' . $token
-    );
+    sendActivationLinkOnEmail($email, $token);
 
     $db->commit();
-    response(['message' => 'Activation link generated, check your email.']);
+    sendResponse(['message' => 'Activation link generated, check your email.']);
 } catch (Exception $e) {
     $db->rollBack();
-    response(['message' => 'Server error'], 500, false);
+    sendResponse(['message' => 'Server error'], 500, false);
 }
