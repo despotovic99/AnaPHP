@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
-
 /**
  * @throws Exception
  */
@@ -14,7 +12,7 @@ function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string
     return htmlspecialchars(trim($data));
 }
 
-#[NoReturn] function response(string $message, int $status = 200, bool $success = true, string $error = ''): void
+function response(string $message, int $status = 200, bool $success = true, string $error = ''): void
 {
     $response = [
         'success' => $success,
