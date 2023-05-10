@@ -1,21 +1,38 @@
 <?php
 
 require_once __DIR__ . '/../src/services/util.php';
-require_once __DIR__ . '/../src/services/registrationService.php';
+require_once __DIR__ . '/../src/db/Database.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    response('Bad request', 400, false, 'Route not found.');
-}
+checkRequestType('GET');
 
 if (empty($_GET['token'])) {
-    response('Bad request', 400, false, 'Token missing.');
+    response(['message' => 'Bad request', 'error' => 'Token missing.'], 400, false);
 }
 
+$token = htmlspecialchars(trim($_GET['token']));
+$db = Database::getConnection();
 try {
-    $token = htmlspecialchars(trim($_GET['token']));
-    activateAccount($token);
+    $db->beginTransaction();
+    $query = "SELECT * FROM pendingEmail WHERE token=:token";
+    $statement = $db->prepare($query);
+    $statement->bindParam('token', $token);
+    $statement->execute();
 
-    response('Account activated');
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$result) {
+        response(['message' => 'Bad request', 'error' => 'Email not found.'], 500, false);
+    }
+    $email = $result['email'];
+
+    $now = (new DateTime('now'))->format('Y-m-d H:i:s');
+    $query = "UPDATE user SET verifiedAt='$now' WHERE email='$email'";
+    $db->query($query);
+    $query = "DELETE FROM pendingEmail WHERE email='$email'";
+    $db->query($query);
+
+    $db->commit();
+
+    response(['message' => 'Account activated']);
 } catch (Exception $e) {
-    response('Bad request', 400, false, $e->getMessage());
+    response(['message' => 'Server error'], 500, false);
 }

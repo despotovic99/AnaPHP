@@ -1,17 +1,56 @@
 <?php
 
+require_once __DIR__ . '/../src/db/Database.php';
 require_once __DIR__ . '/../src/services/util.php';
-require_once __DIR__ . '/../src/services/registrationService.php';
+require_once __DIR__ . '/../src/services/mail/mailService.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    response('Bad request', 400, false, 'Route not found.');
-}
+checkRequestType();
 
+$db = Database::getConnection();
 try {
     $username = getDataFromPostRequest('username');
-    generateActivationLink($username);
 
-    response('Activation link generated, check your email.');
+    $statement = $db->prepare("SELECT email, verifiedAt FROM user WHERE username=:username");
+    $statement->bindParam('username', $username);
+    $statement->execute();
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$result || $result['verifiedAt']) {
+        response(['message' => 'Bad request', 'error' => 'Account already activated.'], 400, false);
+    }
+
+    $db->beginTransaction();
+    $email = $result['email'];
+
+    $query = "SELECT * FROM pendingEmail WHERE email=:email AND expiresAt IS NULL";
+    $statement = $db->prepare($query);
+    $statement->bindParam('email', $email);
+    $statement->execute();
+
+    $token = hash('md5', $email . rand());
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($result) {
+        $query = "UPDATE pendingEmail SET token='$token' WHERE id='{$result['id']}'";
+        $db->query($query);
+    } else {
+        $query = "INSERT INTO pendingEmail (email,token)
+                    VALUES (:email,:token)";
+        $statement = $db->prepare($query);
+
+        $statement->bindParam('email', $email);
+        $statement->bindParam('token', $token);
+
+        $statement->execute();
+    }
+
+    sendEmail(
+        $email,
+        'Aktivacija naloga',
+        'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token=' . $token
+    );
+
+    $db->commit();
+    response(['message' => 'Activation link generated, check your email.']);
 } catch (Exception $e) {
-    response('Bad request', 400, false, $e->getMessage());
+    $db->rollBack();
+    response(['message' => 'Server error'], 500, false);
 }

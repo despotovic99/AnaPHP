@@ -3,9 +3,7 @@
 require_once __DIR__ . '/../src/services/util.php';
 require_once __DIR__ . '/../src/services/registrationService.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    response('Bad request!', 400, false, 'No route found!');
-}
+checkRequestType();
 
 try {
     $username = getDataFromPostRequest('username');
@@ -28,7 +26,7 @@ try {
         $dateOfBirth
     );
 
-    response('User registered successfully, check your email.');
+    response(['message' => 'User registered successfully, check your email.']);
 } catch (Exception $exception) {
-    response('Bad request', 400, false, $exception->getMessage());
+    response(['message' => 'Bad request', 'error' => $exception->getMessage()], 400, false);
 }

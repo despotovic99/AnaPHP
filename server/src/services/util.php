@@ -12,11 +12,11 @@ function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string
     return htmlspecialchars(trim($data));
 }
 
-function response(string $message, int $status = 200, bool $success = true, string $error = ''): void
+function response(array $data, int $status = 200, bool $success = true): void
 {
     $response = [
         'success' => $success,
-        'message' => $message,
+        'data' => $data,
         'code' => $status
     ];
 
@@ -26,4 +26,11 @@ function response(string $message, int $status = 200, bool $success = true, stri
 
     echo json_encode($response);
     die();
+}
+
+function checkRequestType(string $type = 'POST')
+{
+    if ($_SERVER['REQUEST_METHOD'] !== $type) {
+        response(['message' => 'Bad request!', 'error' => 'No route found!'], 400, false);
+    }
 }
