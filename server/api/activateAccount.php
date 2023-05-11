@@ -20,7 +20,7 @@ try {
 
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$result) {
-        sendResponse(['message' => 'Bad request', 'error' => 'Email not found.'], 500, false);
+        sendResponse(['message' => 'Bad request', 'error' => 'Email not found.'], 400, false);
     }
     $email = $result['email'];
 

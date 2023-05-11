@@ -12,17 +12,19 @@ if ((true !== $result = canUserAccess('Admin'))) {
 $db = Database::getConnection();
 try {
     $db->beginTransaction();
+    $id = getDataFromPostRequest('id');
     $userRoleName = getDataFromPostRequest('name');
 
-    $statement = $db->prepare("INSERT INTO userRole (name) VALUES(:name)");
+    $statement = $db->prepare("UPDATE userRole SET name=:name WHERE id=:id");
     $statement->bindParam('name', $userRoleName);
+    $statement->bindParam('id', $id);
     $result = $statement->execute();
     if (!$result) {
-        badRequest('User role not saved.');
+        badRequest('User role not updated.');
     }
     $db->commit();
-    sendResponse(['message' => 'User role saved successfully']);
+    sendResponse(['message'=>'User role updated successfully']);
 } catch (Exception $exception) {
     $db->rollBack();
-    badRequest('User role not saved.');
+    badRequest('User role not updated.');
 }
