@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../util.php';
+require_once __DIR__ . '/../apiController.php';
 require_once __DIR__ . '/../../db/Database.php';
 
 function canUserAccess(string $userRole): bool|string

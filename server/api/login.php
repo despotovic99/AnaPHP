@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../src/services/util.php';
+require_once __DIR__ . '/../src/services/apiController.php';
 require_once __DIR__ . '/../src/db/Database.php';
 
 checkRequestType();
@@ -36,7 +36,7 @@ try {
     $token = hash('md5', $user['email'] . rand() . (new DateTime())->format('Y-m-d'));
     $result = $db->query("INSERT INTO accessToken (token,userId) VALUES ('$token','{$user['id']}')");
     if (!$result) {
-        sendResponse(['message' => 'Bad Request', 'error' => 'User not logged in.']);
+        badRequest('User not logged in.');
     }
 
     sendResponse(['token' => $token, 'message' => 'User successfully logged in']);

@@ -3,9 +3,6 @@
 require_once __DIR__ . '/../db/Database.php';
 require_once __DIR__ . '/mail/mailService.php';
 
-/**
- * @throws Exception
- */
 function registerUser(
     string $username,
     string $email,
