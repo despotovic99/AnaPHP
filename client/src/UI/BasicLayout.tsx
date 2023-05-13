@@ -1,25 +1,19 @@
 import React from "react";
-import DashboardPage from "../pages/DashboardPage";
+import UsersPage from "../pages/UsersPage";
 import DrawerContainer from "./DrawerContainer";
+import '../styles/BasicLayoutStyle.css';
+import {ScreenNames} from "../common/constants/ScreenNames";
 
 type BasicLayoutProps = {
     screenName: string
 }
 const BasicLayout: React.FC<BasicLayoutProps> = (props: BasicLayoutProps) => {
     return (
-        <div style={{display: 'flex'}}>
+        <div className={'layout-container'}>
             <DrawerContainer/>
-            <div style={{
-                flexGrow: 1,
-                height: "100vh",
-                overflow: "auto",
-                display: 'flex',
-                flexDirection: 'column'
-            }}>
-                <div style={{height: '4vw', background: '#2148C0'}}>
-
-                </div>
-                {props.screenName === 'HOME_SCREEN' && <DashboardPage/>}
+            <div className={'layout-card'}>
+                <div className={'layout-top-stripe'}/>
+                {props.screenName === ScreenNames.usersScreen && <UsersPage/>}
             </div>
         </div>
     )

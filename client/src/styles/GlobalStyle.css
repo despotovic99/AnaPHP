@@ -1,0 +1,28 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 1vh 3vh;
+    background: #EFEFED;
+    height: 100vh;
+}
+
+
+.card-title-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.card-button {
+    padding: 15px 35px;
+    background: #2148C0;
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+}
+
+.card h2 {
+    color: #252422;
+}
