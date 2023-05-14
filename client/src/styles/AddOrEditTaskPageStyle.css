@@ -1,0 +1,98 @@
+.form-container .form-fields-row .form-field-container .select-priority {
+    height: 5vh;
+    outline: none;
+    border-radius: 10px;
+    border: 1px solid #A8AFB4;
+    background: transparent;
+    padding: 0 15px;
+    font-size: 20px;
+}
+
+.form-field-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2vh;
+}
+
+.form-field-container label {
+    font-size: 20px;
+    margin-bottom: 1vh;
+}
+
+.form-field-container textarea {
+    border: 1px solid #A8AFB4;
+    border-radius: 10px;
+    min-height: 15vh;
+    padding: 10px;
+    outline: none;
+    font-size: 18px;
+    width: 30vw;
+}
+
+.user-select {
+    width: 13.2vw;
+    height: 5vh;
+    outline: none;
+    border: 1px solid #A8AFB4;
+    border-radius: 10px;
+    background: transparent;
+    font-size: 20px;
+    padding: 0 10px;
+}
+
+.form-container .form-fields-row .form-field-container .due-date-input {
+    width: 11.5vw;
+}
+
+.radio-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.radio-buttons-container .radio-button-container label {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.radio-buttons-container .radio-button-container {
+    display: flex;
+    align-items: center;
+    width: 7vw;
+    justify-content: space-between;
+}
+
+.radio-buttons-container .radio-button-container input[type='radio'] {
+    width: 20px;
+    height: 20px;
+}
+
+.radio-buttons-container .label {
+    padding: 0;
+    margin: 0 0 5px 0;
+    font-size: 20px;
+
+}
+
+.comment-container {
+    margin: 4vh 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-container textarea {
+    outline: none;
+    border-radius: 10px;
+    border: 1px solid #A8AFB4;
+    min-height: 15vh;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.comment-container label {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+

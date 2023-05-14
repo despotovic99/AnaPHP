@@ -9,7 +9,6 @@ const UsersPage = () => {
     const navigate = useNavigate();
 
     const editUserNavigationHandler = (userId: number) => {
-        console.log(userId);
         navigate('/user', {state: {mode: 'EDIT', userId}})
     }
 

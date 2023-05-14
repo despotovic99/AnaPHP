@@ -25,6 +25,8 @@ function App() {
                 <Route path={'/'}
                        element={handleAuth(ScreenNames.usersScreen)}/>
                 <Route path={'/user'} element={handleAuth(ScreenNames.userScreen)}/>
+                <Route path={'/tasks'} element={handleAuth(ScreenNames.tasksScreen)}/>
+                <Route path={'/task'} element={handleAuth(ScreenNames.taskScreen)}/>
             </Routes>
         </Router>
     );

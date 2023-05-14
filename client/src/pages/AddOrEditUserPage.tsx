@@ -16,6 +16,7 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [title, setTitle] = useState<string>();
     const [user, setUser] = useState<User>();
     const [mode, setMode] = useState('');
 
@@ -27,6 +28,7 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
 
     useEffect(() => {
         if (!location.state || !location.state.mode) return;
+        setTitle(location.state.mode === 'EDIT' ? 'Edit User' : 'Add User');
         setMode(location.state.mode);
         getUser();
     }, [])
@@ -35,7 +37,7 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
         <div className={'detail-card-container'}>
             <div className={'card-navigation-container'}>
                 <FontAwesomeIcon onClick={() => navigate('/')} className={'icon'} icon={faChevronLeft}/>
-                <h2>User</h2>
+                {title && <h2>{title}</h2>}
             </div>
             <div className={'card-detail-page'}>
                 <div className={'form-container'}>

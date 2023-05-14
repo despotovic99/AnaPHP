@@ -48,7 +48,9 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                          className={'table-row'}>
                         <p>{item.title}</p>
                         <p>{item.description}</p>
+                        {item.dueDate && <p>{item.dueDate}</p>}
                         <p>{item.priority}</p>
+                        {item.taskGroup && <p>{item.taskGroup}</p>}
                     </div>))}
             </div>
         </div>)
