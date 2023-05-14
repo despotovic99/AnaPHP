@@ -71,10 +71,12 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
                             <input type={'tel'} placeholder={'pera123'}/>
                         </div>
                     </div>
+                    {mode && mode === 'EDIT' && <Table onClick={() => {
+                    }} columns={tasksTableColumns} tasks={dummyTasksForUser}/>}
                     <button className={'save-button'}>Save</button>
                 </div>
-                {mode && mode === 'EDIT' && <Table onClick={() => {
-                }} columns={tasksTableColumns} tasks={dummyTasksForUser}/>}
+
+
             </div>
         </div>
     </div>)
