@@ -24,6 +24,7 @@ function App() {
                 <Route path='/register' element={<RegisterPage/>}/>
                 <Route path={'/'}
                        element={handleAuth(ScreenNames.usersScreen)}/>
+                <Route path={'/user'} element={handleAuth(ScreenNames.userScreen)}/>
             </Routes>
         </Router>
     );

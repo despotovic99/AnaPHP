@@ -3,6 +3,7 @@
     flex-direction: column;
     background: white;
     padding: 0 15px;
+    min-width: 90%;
 }
 
 .table-header {
@@ -38,6 +39,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    z-index: 100;
 }
 
 .action-buttons-container .action-button {
@@ -45,12 +47,19 @@
     border-radius: 10px;
     border: none;
     color: white;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .action-button-edit {
     background: #1669BD;
+
 }
 
 .action-button-delete {
     background: red;
+}
+
+.action-button:hover {
+    cursor: pointer;
 }
