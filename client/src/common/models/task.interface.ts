@@ -6,3 +6,10 @@ export interface Task {
     dueDate?: string,
     taskGroup?: string
 }
+
+export interface TaskGroup {
+    id: number
+    name: string,
+    description: string,
+    numberOfTasks: number
+}

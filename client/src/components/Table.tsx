@@ -1,12 +1,13 @@
 import React from "react";
 import '../styles/TableStyle.css'
 import {User} from "../common/models/user.interface";
-import {Task} from "../common/models/task.interface";
+import {Task, TaskGroup} from "../common/models/task.interface";
 
 type TableHeaderProps = {
     columns: string[]
     users?: User[]
     tasks?: Task[]
+    taskGroups?: TaskGroup[]
     hasActionButtons?: boolean
     onClick: (id: number) => void
 }
@@ -52,6 +53,13 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                         <p>{item.priority}</p>
                         {item.taskGroup && <p>{item.taskGroup}</p>}
                     </div>))}
+                {props.taskGroups?.map((taskGroup, index) => (
+                    <div key={`${taskGroup.id}_${taskGroup.name}_${index}`} className={'table-row'}>
+                        <p>{taskGroup.name}</p>
+                        <p>{taskGroup.description}</p>
+                        <p>{taskGroup.numberOfTasks}</p>
+                    </div>
+                ))}
             </div>
         </div>)
 }
