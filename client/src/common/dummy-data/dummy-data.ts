@@ -40,6 +40,48 @@ export const dummyUsers: User[] = [
         role: 'Admin',
         phoneNumber: '0616055890',
         dateOfBirth: '18.03.1999'
+    }, {
+        id: 6,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
+    }, {
+        id: 7,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
+    }, {
+        id: 8,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
+    }, {
+        id: 9,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
+    }, {
+        id: 10,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
+    }, {
+        id: 11,
+        firstName: 'Nemanja',
+        lastName: 'Mutavdzic',
+        role: 'Admin',
+        phoneNumber: '0616055890',
+        dateOfBirth: '18.03.1999'
     },
 
 ]

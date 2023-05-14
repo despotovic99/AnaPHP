@@ -6,6 +6,7 @@ import {ScreenNames} from "../common/constants/ScreenNames";
 import AddOrEditUserPage from "../pages/AddOrEditUserPage";
 import TasksPage from "../pages/TasksPage";
 import AddOrEditTaskPage from "../pages/AddOrEditTaskPage";
+import TaskGroupsPage from "../pages/TaskGroupsPage";
 
 type BasicLayoutProps = {
     screenName: string
@@ -20,6 +21,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props: BasicLayoutProps) => {
                 {props.screenName === ScreenNames.userScreen && <AddOrEditUserPage/>}
                 {props.screenName === ScreenNames.tasksScreen && <TasksPage/>}
                 {props.screenName === ScreenNames.taskScreen && <AddOrEditTaskPage/>}
+                {props.screenName === ScreenNames.taskGroupsScreen && <TaskGroupsPage/>}
             </div>
         </div>
     )

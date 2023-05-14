@@ -44,7 +44,7 @@ const DrawerContainer = () => {
                     <p>Tasks</p>
                 </div>
                 <div className={getItemContainerClassName('/task-groups')}
-                     onClick={navigationHandler.bind(this, 'task-groups')}>
+                     onClick={navigationHandler.bind(this, '/task-groups')}>
                     <FontAwesomeIcon icon={faObjectGroup} className={'icon'}/>
                     <p>Task Groups</p>
                 </div>
