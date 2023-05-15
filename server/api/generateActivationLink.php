@@ -15,7 +15,7 @@ try {
     $statement->execute();
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$result || $result['verifiedAt']) {
-        sendResponse(['message' => 'Bad request', 'error' => 'Account already activated.'], 400, false);
+        badRequest('Account already activated.');
     }
 
     $db->beginTransaction();
