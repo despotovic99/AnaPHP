@@ -20,7 +20,7 @@ try {
 
     $success = $statement->execute();
     if (!$success || !($user = $statement->fetch(PDO::FETCH_ASSOC))) {
-        sendResponse(['message' => 'Bad request', 'error' => 'User not found!'], 400, false);
+        badRequest('User not found!');
     }
 
     if ($user['verifiedAt'] == null) {
@@ -39,7 +39,7 @@ try {
         badRequest('User not logged in.');
     }
 
-    sendResponse(['token' => $token, 'message' => 'User successfully logged in']);
+    sendResponse(['data' => ['token' => $token], 'message' => 'User successfully logged in']);
 } catch (Exception $e) {
     sendResponse(['message' => 'Server error'], 500, false);
 }
