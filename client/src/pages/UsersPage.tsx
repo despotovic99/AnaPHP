@@ -5,42 +5,42 @@ const UsersPage = () => {
     const dummyUsers = [
         {
             id: 1,
-            firstName: 'Nemanja',
-            lastName: 'Mutavdzic',
+            firstName: 'Test',
+            lastName: 'Test',
             role: 'Admin',
-            phoneNumber: '0616055890',
-            dateOfBirth: '18.03.1999'
+            phoneNumber: '06123456',
+            dateOfBirth: '10.03.2000'
         }, {
             id: 2,
-            firstName: 'Nemanja',
-            lastName: 'Mutavdzic',
+            firstName: 'Test',
+            lastName: 'Test',
             role: 'Admin',
-            phoneNumber: '0616055890',
-            dateOfBirth: '18.03.1999'
+            phoneNumber: '06123456',
+            dateOfBirth: '10.03.2000'
         },
         {
             id: 3,
-            firstName: 'Nemanja',
-            lastName: 'Mutavdzic',
+            firstName: 'Test',
+            lastName: 'Test',
             role: 'Admin',
-            phoneNumber: '0616055890',
-            dateOfBirth: '18.03.1999'
+            phoneNumber: '06123456',
+            dateOfBirth: '10.03.2000'
         },
         {
             id: 4,
-            firstName: 'Nemanja',
-            lastName: 'Mutavdzic',
+            firstName: 'Test',
+            lastName: 'Test',
             role: 'Admin',
-            phoneNumber: '0616055890',
-            dateOfBirth: '18.03.1999'
+            phoneNumber: '06123456',
+            dateOfBirth: '10.03.2000'
         },
         {
             id: 5,
-            firstName: 'Nemanja',
-            lastName: 'Mutavdzic',
+            firstName: 'Test',
+            lastName: 'Test',
             role: 'Admin',
-            phoneNumber: '0616055890',
-            dateOfBirth: '18.03.1999'
+            phoneNumber: '06123456',
+            dateOfBirth: '10.03.2000'
         },
 
     ]

@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/../db/Database.php';
-require_once __DIR__ . '/mail/mailService.php';
+require_once __DIR__ . '/../../db/Database.php';
+require_once __DIR__ . '/../mail/mailService.php';
 
 function registerUser(
     string $username,

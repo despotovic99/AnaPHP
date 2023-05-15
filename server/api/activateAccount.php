@@ -6,7 +6,7 @@ require_once __DIR__ . '/../src/db/Database.php';
 checkRequestType('GET');
 
 if (empty($_GET['token'])) {
-    sendResponse(['message' => 'Bad request', 'error' => 'Token missing.'], 400, false);
+    badRequest('Token missing.');
 }
 
 $token = htmlspecialchars(trim($_GET['token']));
@@ -20,7 +20,7 @@ try {
 
     $result = $statement->fetch(PDO::FETCH_ASSOC);
     if (!$result) {
-        sendResponse(['message' => 'Bad request', 'error' => 'Email not found.'], 400, false);
+        badRequest('Email not found.');
     }
     $email = $result['email'];
 

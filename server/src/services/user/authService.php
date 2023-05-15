@@ -19,10 +19,26 @@ function canUserAccess(string $userRole): bool|string
         return 'User is not logged.';
     }
 
-    if ($userRole !== $user['userRole']) {
+    $currentUserAccessLevel = getUserAccessLevel($user['userRole']);
+    $necessaryUserAccessLevel = getUserAccessLevel($userRole);
+    if ($necessaryUserAccessLevel < $currentUserAccessLevel) {
         return 'User is not permitted to this operation.';
     }
     return true;
+}
+
+function getUserAccessLevel(string $role): int
+{
+    $accessLevel = [
+        'admin' => 4,
+        'rukovodilac' => 3,
+        'izvrsilac' => 2,
+        'default' => 1
+    ];
+    if (empty($accessLevel[$role])) {
+        $role = 'default';
+    }
+    return $accessLevel[$role];
 }
 
 function logoutUser(): string|bool
