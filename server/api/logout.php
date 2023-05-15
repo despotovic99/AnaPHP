@@ -3,7 +3,10 @@
 require_once __DIR__ . '/../src/services/user/authService.php';
 
 checkRequestType();
-if (true !== ($result = logoutUser())) {
+if(empty($_SERVER['HTTP_ACCESS_TOKEN'])){
+    badRequest('Token missing');
+}
+if (true !== ($result = logoutUser($_SERVER['HTTP_ACCESS_TOKEN']))) {
     unauthorized($result);
 };
 

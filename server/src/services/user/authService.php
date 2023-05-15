@@ -41,10 +41,9 @@ function getUserAccessLevel(string $role): int
     return $accessLevel[$role];
 }
 
-function logoutUser(): string|bool
+function logoutUser($token): string|bool
 {
     try {
-        $token = !empty($_SERVER['HTTP_ACCESS_TOKEN']) ? $_SERVER['HTTP_ACCESS_TOKEN'] : 'invalid_token';
         $db = Database::getConnection();
 
         $result = $db->query("SELECT * FROM accessToken WHERE token='$token'");
