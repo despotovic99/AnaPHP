@@ -11,10 +11,6 @@ function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string
 
 function sendResponse(array $data, int $status = 200, bool $success = true): void
 {
-    header("Access-Control-Allow-Origin: http://localhost:3000");
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
-    header("Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, Content-Type,Content-Length, Accept");
-    header('Access-Control-Allow-Credentials: true');
     if ($status != 200) {
         header("HTTP/1.1 $status {$data['message']}");
     }
@@ -41,8 +37,15 @@ function unauthorized(string $error)
 
 function checkRequestType(string $type = 'POST')
 {
+    header("Access-Control-Allow-Origin: http://localhost:3000");
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
+    header(
+        "Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, Content-Type,Content-Length, Accept, Access-Token"
+    );
+    header('Access-Control-Allow-Credentials: true');
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         header('HTTP/1.1 200 OK');
+        exit;
     }
     if ($_SERVER['REQUEST_METHOD'] !== $type) {
         badRequest('No route found!');
