@@ -2,7 +2,6 @@ import React, {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {RegisterDto} from "../common/dtos/auth.interface.dto";
 import {registerUserRequest} from "../api/user.api";
-import axios from "axios";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -23,22 +22,6 @@ const RegisterPage = () => {
             !emailRef.current?.value ||
             !confirmedPasswordRef.current?.value) return;
 
-      /*  if (firstNameRef.current.value.trim().length < 3 ||
-            lastNameRef.current.value.trim().length < 3 ||
-            usernameRef.current.value.trim().length < 3 ||
-            passwordRef.current.value.trim().length < 8 ||
-            !emailRef.current.value.includes('@') ||
-            confirmedPasswordRef.current.value.trim().length < 3) {
-            //TODO add toast
-            console.log('Sva polja moraju biti popunjena');
-            return;
-        }*/
-
-        if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
-            //TODO add toast
-            console.log('Lozinke se ne poklapaju');
-            return;
-        }
         const registerDto: RegisterDto = {
             firstName: firstNameRef.current.value,
             lastName: lastNameRef.current.value,
@@ -49,20 +32,34 @@ const RegisterPage = () => {
             dateOfBirth: dateOfBirthRef.current?.value,
             phoneNumber: phoneNumberRef.current?.value
         }
+        console.log(registerDto);
+
+        if (firstNameRef.current.value.trim().length < 3 ||
+            lastNameRef.current.value.trim().length < 3 ||
+            usernameRef.current.value.trim().length < 3 ||
+            passwordRef.current.value.trim().length < 8 ||
+            !emailRef.current.value.includes('@') ||
+            confirmedPasswordRef.current.value.trim().length < 3) {
+            //TODO add toast
+            console.log('Sva polja moraju biti popunjena');
+            return;
+        }
+
+        if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
+            //TODO add toast
+            console.log('Lozinke se ne poklapaju');
+            return;
+        }
+
         try {
             const response = await registerUserRequest(registerDto);
-            // const response = await axios.post('http:/localhost/api/register.php', registerDto,{
-            //     headers: {
-            //         'Content-Type': 'application/x-www-form-urlencoded',
-            //         'Content-Length':200
-            //     }
-            // });
             console.log(response);
+            navigate('/login');
+            //TODO add toast for verification email
         } catch (error: any) {
             //TODO add toast
             console.log(error);
         }
-        console.log(registerDto);
     }
 
     return (<div className={'page-container'}>

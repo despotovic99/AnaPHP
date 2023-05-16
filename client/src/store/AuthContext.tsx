@@ -26,7 +26,7 @@ const AuthProvider = ({children}: any) => {
         }
     };
 
-    const getAccessToken = () => {
+    const getAccessToken = (): string => {
         return authState.accessToken;
     };
 

@@ -2,7 +2,9 @@ import '../styles/DrawerContainerStyle.css'
 import {faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useLocation, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {logoutUserRequest} from "../api/user.api";
+import {AuthContext} from "../store/AuthContext";
 
 const DrawerContainer = () => {
     const inactiveDrawerItemClass = 'drawer-item-container inactive';
@@ -10,6 +12,7 @@ const DrawerContainer = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const authContext = useContext(AuthContext)
     const [activeDrawerItem, setActiveDrawerItem] = useState('/');
 
     const navigationHandler = (screen: string) => {
@@ -19,6 +22,10 @@ const DrawerContainer = () => {
     const logoutHandler = async () => {
         await localStorage.clear();
         //TODO call api
+        const token = authContext.authState.accessToken;
+        console.log(token)
+        const response = await logoutUserRequest(token);
+        console.log(response);
         navigate('/login');
     }
 
