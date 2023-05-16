@@ -11,7 +11,7 @@ function registerUser(
     string $lastName,
     string $phoneNumber,
     string $dateOfBirth,
-    string $userRole = 'Izvrsilac',
+    int $userRoleId = null,
     bool $sendActivationMail = true
 ): bool|string {
     $db = Database::getConnection();
@@ -22,8 +22,9 @@ function registerUser(
         return $result;
     }
 
-    if (!userRoleExist($userRole)) {
-        return $userRole . ' role does not exist!';
+    if(!$userRoleId){
+        $role = getUserRole('Izvrsilac');
+        $userRoleId = $role['id'];
     }
 
     $birthday = null;
@@ -54,7 +55,7 @@ function registerUser(
         $statement->bindParam('phone', $phoneNumber);
         $statement->bindParam('email', $email);
         $statement->bindParam('birthday', $birthday);
-        $statement->bindParam('userRoleId', $role['id']);
+        $statement->bindParam('userRoleId', $userRoleId);
 
         $statement->execute();
 
@@ -99,7 +100,7 @@ function usernameAndEmailAlreadyTaken(string $username, string $email): string|f
     return false;
 }
 
-function userRoleExist(string $role)
+function getUserRole(string $role)
 {
     $db = Database::getConnection();
     $query = "SELECT * FROM userRole WHERE name='$role'";
