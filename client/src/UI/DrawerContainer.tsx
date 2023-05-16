@@ -3,7 +3,6 @@ import {faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import {logoutUserRequest} from "../api/user.api";
 import {AuthContext} from "../store/AuthContext";
 
 const DrawerContainer = () => {
@@ -20,13 +19,15 @@ const DrawerContainer = () => {
     }
 
     const logoutHandler = async () => {
-        await localStorage.clear();
-        //TODO call api
-        const token = authContext.authState.accessToken;
-        console.log(token)
-        const response = await logoutUserRequest(token);
-        console.log(response);
-        navigate('/login');
+        try {
+            const token = authContext.authState.accessToken;
+            console.log(token);
+            // await logoutUserRequest(token);
+            await localStorage.clear();
+            navigate('/login');
+        } catch (error: any) {
+            console.log(error);
+        }
     }
 
     const getItemContainerClassName = (path: string) => {

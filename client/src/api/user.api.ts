@@ -22,6 +22,7 @@ export async function registerUserRequest(data: RegisterDto) {
 }
 
 export async function logoutUserRequest(token: string) {
+    console.log(token);
     return await axios.post('/logout.php', {}, {
         baseURL: process.env.REACT_APP_BASE_URL,
         headers: {

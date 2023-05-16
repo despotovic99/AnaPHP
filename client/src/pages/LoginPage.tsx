@@ -22,11 +22,13 @@ const LoginPage = () => {
         }
         try {
             const response = await loginUserRequest(loginDto);
+            console.log(response);
             await localStorage.setItem('loggedIn', 'true');
             const loginObject: Login = {
-                accessToken: response.data.token,
+                accessToken: response.data.data.token,
                 authenticated: true
             }
+            console.log(loginObject);
             authContext.setAuth(loginObject);
             navigate('/');
         } catch (error: any) {
