@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../store/AuthContext";
+import {logoutUserRequest} from "../api/user.api";
 
 const DrawerContainer = () => {
     const inactiveDrawerItemClass = 'drawer-item-container inactive';
@@ -21,8 +22,7 @@ const DrawerContainer = () => {
     const logoutHandler = async () => {
         try {
             const token = authContext.authState.accessToken;
-            console.log(token);
-            // await logoutUserRequest(token);
+            await logoutUserRequest(token);
             await localStorage.clear();
             navigate('/login');
         } catch (error: any) {
