@@ -4,10 +4,11 @@
 
 .layout-card {
     flex-grow: 1;
-    height: 100vh;
+    min-height: 100vh;
     overflow: auto;
     display: flex;
     flex-direction: column;
+    background: #EFEFED;
 }
 
 .layout-top-stripe {

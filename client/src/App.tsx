@@ -24,6 +24,10 @@ function App() {
                 <Route path='/register' element={<RegisterPage/>}/>
                 <Route path={'/'}
                        element={handleAuth(ScreenNames.usersScreen)}/>
+                <Route path={'/user'} element={handleAuth(ScreenNames.userScreen)}/>
+                <Route path={'/tasks'} element={handleAuth(ScreenNames.tasksScreen)}/>
+                <Route path={'/task'} element={handleAuth(ScreenNames.taskScreen)}/>
+                <Route path={'/task-groups'} element={handleAuth(ScreenNames.taskGroupsScreen)}/>
             </Routes>
         </Router>
     );
