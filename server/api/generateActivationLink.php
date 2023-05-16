@@ -48,5 +48,5 @@ try {
     sendResponse(['message' => 'Activation link generated, check your email.']);
 } catch (Exception $e) {
     $db->rollBack();
-    sendResponse(['message' => 'Server error'], 500, false);
+    badRequest('Activation link not generated.');
 }
