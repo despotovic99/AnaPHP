@@ -4,8 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {LoginDto} from "../common/dtos/auth.interface.dto";
 import {Login} from "../common/models/auth.interface";
 import {AuthContext} from "../store/AuthContext";
-import axiosInstance from "../api/axios";
-import axios from "axios";
+import {loginUserRequest} from "../api/user.api";
 
 
 const LoginPage = () => {
@@ -22,12 +21,10 @@ const LoginPage = () => {
             password: passwordRef.current?.value!
         }
         try {
-            console.log(loginDto);
-            const response = await axiosInstance.post('/login.php', loginDto)
-            console.log(response)
+            const response = await loginUserRequest(loginDto);
             await localStorage.setItem('loggedIn', 'true');
             const loginObject: Login = {
-                accessToken: '',
+                accessToken: response.data.token,
                 authenticated: true
             }
             authContext.setAuth(loginObject);

@@ -11,5 +11,5 @@ export interface RegisterDto {
     firsName: string,
     lastName: string,
     phoneNumber?: string
-    dateOfBirth?: Date
+    dateOfBirth?: string
 }

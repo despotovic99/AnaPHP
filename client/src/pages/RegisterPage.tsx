@@ -1,6 +1,7 @@
 import React, {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {RegisterDto} from "../common/dtos/auth.interface.dto";
+import {registerUserRequest} from "../api/user.api";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const RegisterPage = () => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmedPasswordRef = useRef<HTMLInputElement>(null);
 
-    const registerUserHandler = () => {
+    const registerUserHandler = async () => {
         if (!firstNameRef.current?.value ||
             !lastNameRef.current?.value ||
             !usernameRef.current?.value ||
@@ -44,8 +45,15 @@ const RegisterPage = () => {
             email: emailRef.current.value,
             password: passwordRef.current.value,
             confirmedPassword: confirmedPasswordRef.current.value,
-            dateOfBirth: new Date(dateOfBirthRef.current?.value!),
+            dateOfBirth: dateOfBirthRef.current?.value,
             phoneNumber: phoneNumberRef.current?.value
+        }
+        try {
+            const response = await registerUserRequest(registerDto);
+            console.log(response);
+        } catch (error: any) {
+            //TODO add toast
+            console.log(error);
         }
         console.log(registerDto);
     }
