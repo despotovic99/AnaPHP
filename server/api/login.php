@@ -39,7 +39,7 @@ try {
         badRequest('User not logged in.');
     }
 
-    sendResponse([['token' => $token], 'message' => 'User successfully logged in']);
+    sendResponse(['token' => $token, 'message' => 'User successfully logged in']);
 } catch (Exception $e) {
     sendResponse(['message' => 'Server error'], 500, false);
 }
