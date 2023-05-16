@@ -8,7 +8,7 @@ export interface RegisterDto {
     email: string,
     password: string,
     confirmedPassword: string,
-    firsName: string,
+    firstName: string,
     lastName: string,
     phoneNumber?: string
     dateOfBirth?: string

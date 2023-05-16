@@ -28,7 +28,12 @@ function registerUser(
 
     $birthday = null;
     if (!empty($dateOfBirth)) {
+        try{
+
         $birthday = (new DateTime($dateOfBirth))->format('Y-m-d');
+        }catch (Exception $exception){
+            return 'Insert valid date';
+        }
     }
 
     if (empty($phoneNumber)) {

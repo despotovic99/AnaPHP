@@ -2,6 +2,7 @@ import React, {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {RegisterDto} from "../common/dtos/auth.interface.dto";
 import {registerUserRequest} from "../api/user.api";
+import axios from "axios";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ const RegisterPage = () => {
             !emailRef.current?.value ||
             !confirmedPasswordRef.current?.value) return;
 
-        if (firstNameRef.current.value.trim().length < 3 ||
+      /*  if (firstNameRef.current.value.trim().length < 3 ||
             lastNameRef.current.value.trim().length < 3 ||
             usernameRef.current.value.trim().length < 3 ||
             passwordRef.current.value.trim().length < 8 ||
@@ -31,7 +32,7 @@ const RegisterPage = () => {
             //TODO add toast
             console.log('Sva polja moraju biti popunjena');
             return;
-        }
+        }*/
 
         if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
             //TODO add toast
@@ -39,7 +40,7 @@ const RegisterPage = () => {
             return;
         }
         const registerDto: RegisterDto = {
-            firsName: firstNameRef.current.value,
+            firstName: firstNameRef.current.value,
             lastName: lastNameRef.current.value,
             username: usernameRef.current.value,
             email: emailRef.current.value,
@@ -50,6 +51,12 @@ const RegisterPage = () => {
         }
         try {
             const response = await registerUserRequest(registerDto);
+            // const response = await axios.post('http:/localhost/api/register.php', registerDto,{
+            //     headers: {
+            //         'Content-Type': 'application/x-www-form-urlencoded',
+            //         'Content-Length':200
+            //     }
+            // });
             console.log(response);
         } catch (error: any) {
             //TODO add toast
