@@ -97,4 +97,10 @@
     gap: 25px
 }
 
+.activation-link-button {
+    color: white;
+}
 
+.activation-link-button:hover {
+    cursor: pointer;
+}

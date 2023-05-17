@@ -22,7 +22,6 @@ export async function registerUserRequest(data: RegisterDto) {
 }
 
 export async function logoutUserRequest(token: string) {
-    console.log(token);
     return await axios.post('/logout.php', {}, {
         baseURL: process.env.REACT_APP_BASE_URL,
         headers: {
@@ -31,4 +30,14 @@ export async function logoutUserRequest(token: string) {
             'Content-Length': 200
         }
     })
+}
+
+export async function sendActivationLinkRequest(data: { username: string }) {
+    return await axios.post('/generateActivationLink.php', data, {
+        baseURL: process.env.REACT_APP_BASE_URL,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': 200
+        }
+    });
 }

@@ -2,6 +2,7 @@ import React, {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {RegisterDto} from "../common/dtos/auth.interface.dto";
 import {registerUserRequest} from "../api/user.api";
+import {toast, ToastContainer} from "react-toastify";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -32,33 +33,31 @@ const RegisterPage = () => {
             dateOfBirth: dateOfBirthRef.current?.value,
             phoneNumber: phoneNumberRef.current?.value
         }
-        console.log(registerDto);
 
         if (firstNameRef.current.value.trim().length < 3 ||
             lastNameRef.current.value.trim().length < 3 ||
             usernameRef.current.value.trim().length < 3 ||
-            passwordRef.current.value.trim().length < 8 ||
             !emailRef.current.value.includes('@') ||
             confirmedPasswordRef.current.value.trim().length < 3) {
-            //TODO add toast
-            console.log('Sva polja moraju biti popunjena');
+            toast.error('All fields are required');
+            return;
+        }
+
+        if (passwordRef.current.value.trim().length < 8) {
+            toast.error('Password must have at least 8 characters');
             return;
         }
 
         if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
-            //TODO add toast
-            console.log('Lozinke se ne poklapaju');
+            toast.error(`Passwords don't match`);
             return;
         }
 
         try {
-            const response = await registerUserRequest(registerDto);
-            console.log(response);
-            navigate('/login');
-            //TODO add toast for verification email
+            await registerUserRequest(registerDto);
+            await toast.info('Registration successful. Check your email for activation link!');
         } catch (error: any) {
-            //TODO add toast
-            console.log(error);
+            toast.error(error.response.data.data.error);
         }
     }
 
@@ -126,6 +125,7 @@ const RegisterPage = () => {
                 <h4 onClick={() => navigate('/login')}>Already have an account? Sign in</h4>
             </div>
         </div>
+        <ToastContainer position={'bottom-right'}/>
     </div>)
 }
 export default RegisterPage;

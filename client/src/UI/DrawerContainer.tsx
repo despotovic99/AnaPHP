@@ -5,6 +5,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../store/AuthContext";
 import {logoutUserRequest} from "../api/user.api";
+import {toast} from "react-toastify";
 
 const DrawerContainer = () => {
     const inactiveDrawerItemClass = 'drawer-item-container inactive';
@@ -26,7 +27,7 @@ const DrawerContainer = () => {
             await localStorage.clear();
             navigate('/login');
         } catch (error: any) {
-            console.log(error);
+            toast.error(error.response.data.data.error);
         }
     }
 
