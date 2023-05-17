@@ -2,7 +2,10 @@ import '../styles/DrawerContainerStyle.css'
 import {faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useLocation, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {AuthContext} from "../store/AuthContext";
+import {logoutUserRequest} from "../api/user.api";
+import {toast} from "react-toastify";
 
 const DrawerContainer = () => {
     const inactiveDrawerItemClass = 'drawer-item-container inactive';
@@ -10,6 +13,7 @@ const DrawerContainer = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const authContext = useContext(AuthContext)
     const [activeDrawerItem, setActiveDrawerItem] = useState('/');
 
     const navigationHandler = (screen: string) => {
@@ -17,9 +21,14 @@ const DrawerContainer = () => {
     }
 
     const logoutHandler = async () => {
-        await localStorage.clear();
-        //TODO call api
-        navigate('/login');
+        try {
+            const token = authContext.authState.accessToken;
+            await logoutUserRequest(token);
+            await localStorage.clear();
+            navigate('/login');
+        } catch (error: any) {
+            toast.error(error.response.data.data.error);
+        }
     }
 
     const getItemContainerClassName = (path: string) => {
@@ -44,7 +53,7 @@ const DrawerContainer = () => {
                     <p>Tasks</p>
                 </div>
                 <div className={getItemContainerClassName('/task-groups')}
-                     onClick={navigationHandler.bind(this, 'task-groups')}>
+                     onClick={navigationHandler.bind(this, '/task-groups')}>
                     <FontAwesomeIcon icon={faObjectGroup} className={'icon'}/>
                     <p>Task Groups</p>
                 </div>

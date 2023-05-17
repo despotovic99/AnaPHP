@@ -18,7 +18,7 @@ try {
         $roles = $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    sendResponse(['data' => $roles]);
+    sendResponse(['roles' => $roles]);
 } catch (Exception $exception) {
     badRequest('Error occurred while getting all user roles.');
 }

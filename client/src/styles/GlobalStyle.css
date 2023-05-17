@@ -1,17 +1,39 @@
 .card {
     display: flex;
     flex-direction: column;
-    padding: 1vh 3vh;
+    padding: 1vh 3vw;
     background: #EFEFED;
-    height: 100vh;
+}
+
+.detail-card-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 66%;
+}
+
+.card-detail-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    width: 100%;
+    padding: 5vh 0;
 }
 
 
 .card-title-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
     align-items: center;
+}
+
+.card-navigation-container {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
 }
 
 .card-button {
@@ -23,6 +45,22 @@
     border-radius: 10px;
 }
 
+.card-button:hover {
+    cursor: pointer;
+}
+
 .card h2 {
     color: #252422;
+}
+
+.save-button {
+    padding: 12px 35px;
+    outline: none;
+    border: none;
+    color: white;
+    font-weight: bolder;
+    text-transform: uppercase;
+    background: #2148C0;
+    align-self: flex-end;
+    border-radius: 10px;
 }

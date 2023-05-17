@@ -1,6 +1,7 @@
 import {createContext, useState} from 'react';
 import {AuthContextInterface} from '../common/models/context.interface';
 import {Login} from "../common/models/auth.interface";
+import {toast} from "react-toastify";
 
 const AuthContext = createContext({} as AuthContextInterface);
 const {Provider} = AuthContext;
@@ -20,13 +21,11 @@ const AuthProvider = ({children}: any) => {
 
             await localStorage.clear();
         } catch (error: any) {
-            //TODO process error
-            console.log(error);
-            // toast.error(error?.response?.data?.message);
+            toast.error(error?.response?.data?.data.error);
         }
     };
 
-    const getAccessToken = () => {
+    const getAccessToken = (): string => {
         return authState.accessToken;
     };
 

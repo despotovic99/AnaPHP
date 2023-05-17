@@ -24,7 +24,7 @@ try {
         badRequest('Can not get task with provided id ' . $id);
     }
 
-    sendResponse(['data' => $role]);
+    sendResponse(['role' => $role]);
 } catch (Exception $exception) {
     badRequest('Error occurred while getting user role.');
 }
