@@ -9,40 +9,55 @@ import {toast, ToastContainer} from "react-toastify";
 
 
 const LoginPage = () => {
-
+    //React hook for navigating between screens
     const navigate = useNavigate();
+    //including global context into component for handling login
     const authContext = useContext(AuthContext);
+    //React hooks to handle form input fields values
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    //flag for showing clickable message if user can not login because he is not verified
     const [showReactivateActivationLink, toggleShowReactivateActivationLink] = useState(false);
 
+    //function for sending login request to backend
     const loginHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+        //preventing default event when form is submitted
         event.preventDefault();
+
+        //data which will be send to backend with values from form
         const loginDto: LoginDto = {
             username: usernameRef.current?.value!,
             password: passwordRef.current?.value!
         }
+
         try {
+            //sending request to backend and getting response
             const response = await loginUserRequest(loginDto);
             await localStorage.setItem('loggedIn', 'true');
             const loginObject: Login = {
                 accessToken: response.data.data.token,
                 authenticated: true
             }
+            //setting login information in context because I need this information in whole application
             authContext.setAuth(loginObject);
+            //navigating to home screen
             navigate('/');
             toggleShowReactivateActivationLink(false);
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
+            //showing clickable paragraph if user trying to log in, and he is not verified
             if (error?.response?.data?.data?.error === 'User not verified!') {
                 toggleShowReactivateActivationLink(true);
             }
         }
     };
 
+    //function for sending request to backend for generating new activation link
     const resetActivationLink = async () => {
         try {
+            //sending request to backend
             await sendActivationLinkRequest({username: usernameRef.current?.value!});
+            //disabling clickable paragraph
             toggleShowReactivateActivationLink(false);
             toast.success('Activation link successfully sent!');
         } catch (error: any) {

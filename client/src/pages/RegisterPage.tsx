@@ -5,7 +5,10 @@ import {registerUserRequest} from "../api/user.api";
 import {toast, ToastContainer} from "react-toastify";
 
 const RegisterPage = () => {
+    //React hook for navigating between screens
     const navigate = useNavigate();
+
+    //React hooks to handle form input fields values
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
     const dateOfBirthRef = useRef<HTMLInputElement>(null);
@@ -15,14 +18,43 @@ const RegisterPage = () => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmedPasswordRef = useRef<HTMLInputElement>(null);
 
+
+    //user registration function
     const registerUserHandler = async () => {
+        //checking if one of input fields are empty and throwing an error if so
         if (!firstNameRef.current?.value ||
             !lastNameRef.current?.value ||
             !usernameRef.current?.value ||
             !passwordRef.current?.value ||
             !emailRef.current?.value ||
-            !confirmedPasswordRef.current?.value) return;
+            !confirmedPasswordRef.current?.value) {
+            toast.error('All fields are required!');
+            return;
+        }
 
+        //checking minimum length for first name, last name and username
+        //trim() is used to cut whitespaces
+        if (firstNameRef.current.value.trim().length < 2 ||
+            lastNameRef.current.value.trim().length < 2 ||
+            usernameRef.current.value.trim().length < 2) {
+            toast.error('First name, last name and username must be longer then 2 characters');
+            return;
+        }
+
+        //checking minimum length for password
+        if (passwordRef.current.value.trim().length < 8 ||
+            confirmedPasswordRef.current.value.trim().length < 8) {
+            toast.error('Password must have at least 8 characters');
+            return;
+        }
+
+        //checking if the passwords match
+        if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
+            toast.error(`Passwords don't match`);
+            return;
+        }
+
+        //creating abject with data from input fields
         const registerDto: RegisterDto = {
             firstName: firstNameRef.current.value,
             lastName: lastNameRef.current.value,
@@ -33,31 +65,13 @@ const RegisterPage = () => {
             dateOfBirth: dateOfBirthRef.current?.value,
             phoneNumber: phoneNumberRef.current?.value
         }
-
-        if (firstNameRef.current.value.trim().length < 3 ||
-            lastNameRef.current.value.trim().length < 3 ||
-            usernameRef.current.value.trim().length < 3 ||
-            !emailRef.current.value.includes('@') ||
-            confirmedPasswordRef.current.value.trim().length < 3) {
-            toast.error('All fields are required');
-            return;
-        }
-
-        if (passwordRef.current.value.trim().length < 8) {
-            toast.error('Password must have at least 8 characters');
-            return;
-        }
-
-        if (passwordRef.current.value !== confirmedPasswordRef.current.value) {
-            toast.error(`Passwords don't match`);
-            return;
-        }
-
         try {
+            //sending request to backend with data
             await registerUserRequest(registerDto);
-            await toast.info('Registration successful. Check your email for activation link!');
+            await toast.success('Registration successful. Check your email for activation link!');
         } catch (error: any) {
-            toast.error(error.response.data.data.error);
+            //displaying error if it occurs
+            toast.error(error?.response?.data?.data?.error);
         }
     }
 
