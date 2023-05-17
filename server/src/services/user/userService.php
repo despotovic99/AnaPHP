@@ -1,6 +1,9 @@
 <?php
 
+use src\config\Config;
+
 require_once __DIR__ . '/../../db/Database.php';
+require_once __DIR__ . '/../../config/Config.php';
 require_once __DIR__ . '/../mail/mailService.php';
 
 function registerUser(
@@ -22,17 +25,16 @@ function registerUser(
         return $result;
     }
 
-    if(!$userRoleId){
+    if (!$userRoleId) {
         $role = getUserRole('Izvrsilac');
         $userRoleId = $role['id'];
     }
 
     $birthday = null;
     if (!empty($dateOfBirth)) {
-        try{
-
-        $birthday = (new DateTime($dateOfBirth))->format('Y-m-d');
-        }catch (Exception $exception){
+        try {
+            $birthday = (new DateTime($dateOfBirth))->format('Y-m-d');
+        } catch (Exception $exception) {
             return 'Insert valid date';
         }
     }
@@ -114,6 +116,15 @@ function sendActivationLinkOnEmail(string $email, string $token)
     sendEmail(
         $email,
         'Aktivacija naloga',
-        'Aktivirajte Vas nalog klikom na link: http://localhost/api/activateAccount.php?token=' . $token
+        'Aktivirajte Vas nalog klikom na link: ' . Config::BASE_URL . '/activateAccount.php?token=' . $token
+    );
+}
+
+function sendForgotPasswordLinkOnEmail(string $email, string $token)
+{
+    sendEmail(
+        $email,
+        'Password reset',
+        'Resetujte vas password klikom na link: ' . Config::BASE_URL . '/resetPassword.php?token=' . $token
     );
 }

@@ -1,5 +1,8 @@
 <?php
-require_once 'config.php';
+
+require_once __DIR__ . '/../config/Config.php';
+use src\config\Config;
+
 class Database
 {
 
@@ -11,7 +14,11 @@ class Database
     public static function getConnection(): PDO
     {
         if (self::$connection == null) {
-            self::$connection = new PDO('mysql:dbname=' . Config::DATABASE . ';host=' . Config::HOST, Config::USER, Config::PASSWORD);
+            self::$connection = new PDO(
+                'mysql:dbname=' . Config::DATABASE . ';host=' . Config::HOST,
+                Config::USER,
+                Config::PASSWORD
+            );
             if (self::$connection->errorCode()) {
                 throw new Exception('Could not connect to database');
             }
