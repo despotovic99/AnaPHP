@@ -125,6 +125,6 @@ function sendForgotPasswordLinkOnEmail(string $email, string $token)
     sendEmail(
         $email,
         'Password reset',
-        'Resetujte vas password klikom na link: ' . Config::BASE_URL . '/resetPassword.php?token=' . $token
+        'Resetujte vas password klikom na link: http://localhost:3000/reset-password?token=' . $token
     );
 }
