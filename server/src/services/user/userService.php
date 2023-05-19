@@ -20,7 +20,6 @@ function registerUser(
     $db = Database::getConnection();
 
     $password = hash('md5', $password);
-
     if (false !== ($result = usernameAndEmailAlreadyTaken($username, $email))) {
         return $result;
     }
@@ -84,18 +83,87 @@ function registerUser(
     return true;
 }
 
-function usernameAndEmailAlreadyTaken(string $username, string $email): string|false
+function updateUser(
+    int $id,
+    string $username,
+    string $email,
+    string $password,
+    string $firstName,
+    string $lastName,
+    string $phoneNumber,
+    string $dateOfBirth,
+    int $userRoleId,
+) {
+    $db = Database::getConnection();
+
+    $password = hash('md5', $password);
+    if (false !== ($result = usernameAndEmailAlreadyTaken($username, $email, $id))) {
+        return $result;
+    }
+
+    $birthday = null;
+    if (!empty($dateOfBirth)) {
+        try {
+            $birthday = (new DateTime($dateOfBirth))->format('Y-m-d');
+        } catch (Exception $exception) {
+            return 'Insert valid date';
+        }
+    }
+
+    if (empty($phoneNumber)) {
+        $phoneNumber = null;
+    }
+
+    try {
+        $db->beginTransaction();
+
+        $query = "UPDATE user SET 
+                username=:username, 
+                password=:password,
+                firstName=:firstName,
+                lastName=:lastName,
+                phone=:phone,
+                email=:email,
+                birthday=:birthday,
+                userRoleId=:userRoleId
+                WHERE id=:id";
+
+        $statement = $db->prepare($query);
+        $statement->bindParam('username', $username);
+        $statement->bindParam('password', $password);
+        $statement->bindParam('firstName', $firstName);
+        $statement->bindParam('lastName', $lastName);
+        $statement->bindParam('phone', $phoneNumber);
+        $statement->bindParam('email', $email);
+        $statement->bindParam('birthday', $birthday);
+        $statement->bindParam('userRoleId', $userRoleId);
+        $statement->bindParam('id', $id);
+
+        $statement->execute();
+
+        $db->commit();
+    } catch (Exception $e) {
+        $db->rollBack();
+        return 'Error occurred, user not updated.';
+    }
+
+    return true;
+}
+
+function usernameAndEmailAlreadyTaken(string $username, string $email, int $id = null): string|false
 {
     $db = Database::getConnection();
     $query = "SELECT * FROM user WHERE username LIKE '$username';";
     $result = $db->query($query);
-    if (!empty($result->fetchAll())) {
+    $userData = $result->fetch(PDO::FETCH_ASSOC);
+    if (!empty($userData) && $userData['id'] !== $id) {
         return 'Username is already taken.';
     }
 
     $query = "SELECT * FROM user WHERE email LIKE '$email';";
     $result = $db->query($query);
-    if (!empty($result->fetchAll())) {
+    $userData = $result->fetch(PDO::FETCH_ASSOC);
+    if (!empty($userData) && $userData['id'] !== $id) {
         return 'Email is already taken.';
     }
 

@@ -21,7 +21,7 @@ function canUserAccess(string $userRole): bool|string
 
     $currentUserAccessLevel = getUserAccessLevel($user['userRole']);
     $necessaryUserAccessLevel = getUserAccessLevel($userRole);
-    if ($necessaryUserAccessLevel < $currentUserAccessLevel) {
+    if ($currentUserAccessLevel < $necessaryUserAccessLevel) {
         return 'User is not permitted to this operation.';
     }
     return true;
@@ -29,6 +29,7 @@ function canUserAccess(string $userRole): bool|string
 
 function getUserAccessLevel(string $role): int
 {
+    $role = strtolower($role);
     $accessLevel = [
         'admin' => 4,
         'rukovodilac' => 3,

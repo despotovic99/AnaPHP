@@ -6,10 +6,10 @@ require_once __DIR__ . '/../../src/services/user/userService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType();
-if ((true !== $result = canUserAccess('Admin'))) {
+if ((true !== $result = canUserAccess('admin'))) {
     unauthorized($result);
 }
-
+$id = getDataFromPostRequest('id');
 $username = getDataFromPostRequest('username');
 $email = getDataFromPostRequest('email');
 $password = getDataFromPostRequest('password');
@@ -20,7 +20,7 @@ $phoneNumber = getDataFromPostRequest('phoneNumber', false);
 $dateOfBirth = getDataFromPostRequest('dateOfBirth', false);
 $roleId = intval(getDataFromPostRequest('roleId'));
 
-if(!$roleId){
+if (!$roleId) {
     badRequest('Invalid role provided.');
 }
 
@@ -28,7 +28,8 @@ if ($password != $confirmedPassword) {
     badRequest('Passwords does not match!');
 }
 
-$result = registerUser(
+$result = updateUser(
+    $id,
     $username,
     $email,
     $password,
@@ -36,12 +37,10 @@ $result = registerUser(
     $lastName,
     $phoneNumber,
     $dateOfBirth,
-    $roleId,
-    false
+    $roleId
 );
-
 if (true !== $result) {
     badRequest($result);
 }
 
-sendResponse(['message' => 'User account created successfully']);
+sendResponse(['message' => 'User account updated successfully']);
