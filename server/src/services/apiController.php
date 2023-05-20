@@ -1,12 +1,23 @@
 <?php
 
-function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string
+function getDataFromPostRequest(string $dataKey, bool $mandatory = true): string|array
 {
     $data = !empty($_POST[$dataKey]) ? $_POST[$dataKey] : '';
     if (!$data && $mandatory) {
         badRequest('Parameter ' . $dataKey . ' missing!');
     }
-    return htmlspecialchars(trim($data));
+    if (is_string($data)) {
+        return htmlspecialchars(trim($data), ENT_QUOTES);
+    }
+
+    if (is_array($data)) {
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i] = htmlspecialchars(trim($data[$i]), ENT_QUOTES);
+        }
+    } else {
+        badRequest('Invalid input for ' . $dataKey);
+    }
+    return $data;
 }
 
 function sendResponse(array $data, int $status = 200, bool $success = true): void
@@ -22,7 +33,7 @@ function sendResponse(array $data, int $status = 200, bool $success = true): voi
     ];
 
     echo json_encode($response);
-    die();
+    die;
 }
 
 function badRequest(string $error)

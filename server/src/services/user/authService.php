@@ -16,15 +16,15 @@ function canUserAccess(string $userRole): bool|string
     );
     $user = $result->fetch(PDO::FETCH_ASSOC);
     if (!$user) {
-        return 'User is not logged.';
+        unauthorized('User is not logged.');
     }
 
     $currentUserAccessLevel = getUserAccessLevel($user['userRole']);
     $necessaryUserAccessLevel = getUserAccessLevel($userRole);
     if ($currentUserAccessLevel < $necessaryUserAccessLevel) {
-        return 'User is not permitted to this operation.';
+        unauthorized('User is not permitted to this operation.');
     }
-    return true;
+    return $user;
 }
 
 function getUserAccessLevel(string $role): int

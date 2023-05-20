@@ -6,9 +6,7 @@ require_once __DIR__ . '/../../src/services/user/userService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType('GET');
-if ((true !== $result = canUserAccess('admin'))) {
-    unauthorized($result);
-}
+canUserAccess('admin');
 
 $id = !empty($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
 

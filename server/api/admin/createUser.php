@@ -6,9 +6,7 @@ require_once __DIR__ . '/../../src/services/user/userService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType();
-if ((true !== $result = canUserAccess('Admin'))) {
-    unauthorized($result);
-}
+canUserAccess('Admin');
 
 $username = getDataFromPostRequest('username');
 $email = getDataFromPostRequest('email');
@@ -20,7 +18,7 @@ $phoneNumber = getDataFromPostRequest('phoneNumber', false);
 $dateOfBirth = getDataFromPostRequest('dateOfBirth', false);
 $roleId = intval(getDataFromPostRequest('roleId'));
 
-if(!$roleId){
+if (!$roleId) {
     badRequest('Invalid role provided.');
 }
 

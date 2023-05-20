@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../src/services/user/authService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType('GET');
-if ((true !== $result = canUserAccess('Admin'))) {
-    unauthorized($result);
-}
+canUserAccess('Admin');
 
 if (empty($_GET['id'])) {
     badRequest('Id is missing!');

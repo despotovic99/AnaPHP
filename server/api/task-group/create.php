@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../src/services/user/authService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType();
-if ((true !== $result = canUserAccess('Rukovodilac'))) {
-    unauthorized($result);
-}
+canUserAccess('Rukovodilac');
 
 $name = getDataFromPostRequest('name');
 $db = Database::getConnection();
