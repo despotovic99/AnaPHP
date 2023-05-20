@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../apiController.php';
 require_once __DIR__ . '/../../db/Database.php';
 
-function canUserAccess(string $userRole): bool|string
+function canUserAccess(string $userRole): array
 {
     $token = !empty($_SERVER['HTTP_ACCESS_TOKEN']) ? $_SERVER['HTTP_ACCESS_TOKEN'] : 'invalid_token';
 
