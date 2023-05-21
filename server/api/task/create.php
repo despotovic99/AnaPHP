@@ -23,7 +23,6 @@ if (!$manager) {
     $manager = $user['userId'];
 }
 
-
 $folderName = 'task';
 $db = Database::getConnection();
 try {
@@ -36,8 +35,9 @@ try {
         throw new Exception();
     }
     $taskId = $db->lastInsertId();
+
     $folderName .= '-' . $taskId;
-    storeTaskFiles($folderName, $taskId, $_FILES['files'], $db);
+    storeTaskFiles($folderName, $_FILES['files']);
 
     $db->commit();
 } catch (Exception $exception) {

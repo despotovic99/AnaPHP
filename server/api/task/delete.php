@@ -14,10 +14,7 @@ $db = Database::getConnection();
 try {
     $db->beginTransaction();
 
-    $statement = $db->prepare("DELETE FROM file WHERE taskId=?");
-    if ($statement->execute([$id])) {
-        deleteFolder(__DIR__ . '/../../uploads/task-' . $id);
-    }
+    deleteFolder(__DIR__ . '/../../uploads/task-' . $id);
 
     $statement = $db->prepare("DELETE FROM task WHERE id=?");
     $statement->execute([$id]);

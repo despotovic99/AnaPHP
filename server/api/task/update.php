@@ -19,6 +19,7 @@ $priority = getDataFromPostRequest('priority');
 if ($priority < 1 || $priority > 10) {
     badRequest('Priority must be 1-10');
 }
+
 $manager = getDataFromPostRequest('manager', false);
 if (!$manager) {
     $manager = $user['userId'];
