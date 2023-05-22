@@ -37,9 +37,10 @@ const AddOrEditTaskPage = () => {
     const [taskStatus, setTaskStatus] = useState()
 
     const getExecutorsAndManagers = async () => {
-        const executorsResponse = await axios.get('/task/getUsers?type=izvrsilac', {
+        const token = await localStorage.getItem('token');
+        const executorsResponse = await axios.get('/task/getUsers.php?type=izvrsilac', {
             baseURL: process.env.REACT_APP_BASE_URL, headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Token': token
             }
         })
         console.log(executorsResponse);
