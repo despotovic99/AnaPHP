@@ -76,7 +76,8 @@ const AddOrEditTaskPage = () => {
             manager: null
         }
         console.log(files)
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/task/create.php`, data, {
+        const response = await axios.post(`/task/create.php`, data, {
+            baseURL: process.env.REACT_APP_BASE_URL,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Content-Length': 200
