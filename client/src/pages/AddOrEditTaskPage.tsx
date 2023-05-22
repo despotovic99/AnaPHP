@@ -2,10 +2,11 @@ import '../styles/GlobalStyle.css';
 import '../styles/AddOrEditTaskPageStyle.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {TaskGroup} from "../common/models/task.interface";
 import axios from "../api/axios";
+import {AuthContext} from "../store/AuthContext";
 
 
 const AddOrEditTaskPage = () => {
@@ -23,6 +24,8 @@ const AddOrEditTaskPage = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+
+    const authContext = useContext(AuthContext);
 
     const [executors, setExecutors] = useState<any[]>(dummyExecutors)
     const [title, setTitle] = useState<string>();
@@ -76,9 +79,12 @@ const AddOrEditTaskPage = () => {
             manager: null
         }
         console.log(files)
+        const token = await localStorage.getItem('token');
+        console.log(token);
         const response = await axios.post(`/task/create.php`, data, {
             baseURL: process.env.REACT_APP_BASE_URL,
             headers: {
+                'Access-Token': token,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Content-Length': 200
             }

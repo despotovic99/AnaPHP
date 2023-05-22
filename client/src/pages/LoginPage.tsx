@@ -34,6 +34,7 @@ const LoginPage = () => {
             //sending request to backend and getting response
             const response = await loginUserRequest(loginDto);
             await localStorage.setItem('loggedIn', 'true');
+            await localStorage.setItem('token', response.data.data.token);
             const loginObject: Login = {
                 accessToken: response.data.data.token,
                 authenticated: true

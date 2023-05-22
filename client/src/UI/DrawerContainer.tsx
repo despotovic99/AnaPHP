@@ -22,10 +22,11 @@ const DrawerContainer = () => {
 
     const logoutHandler = async () => {
         try {
-            const token = authContext.authState.accessToken;
-            await logoutUserRequest(token);
             await localStorage.clear();
             navigate('/login');
+            const token = await localStorage.getItem('token');
+            if (!token) return;
+            await logoutUserRequest(token);
         } catch (error: any) {
             toast.error(error.response.data.data.error);
         }
