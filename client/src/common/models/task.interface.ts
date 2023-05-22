@@ -4,7 +4,7 @@ export interface Task {
     description: string,
     priority: number
     dueDate?: string,
-    taskGroup?: string
+    taskGroupName?: string
 }
 
 export interface TaskGroup {

@@ -51,7 +51,7 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                         <p>{item.description}</p>
                         {item.dueDate && <p>{item.dueDate}</p>}
                         <p>{item.priority}</p>
-                        {item.taskGroup && <p>{item.taskGroup}</p>}
+                        {item.taskGroupName && <p>{item.taskGroupName}</p>}
                     </div>))}
                 {props.taskGroups?.map((taskGroup, index) => (
                     <div key={`${taskGroup.id}_${taskGroup.name}_${index}`} className={'table-row'}>

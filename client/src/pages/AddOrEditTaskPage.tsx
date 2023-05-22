@@ -2,11 +2,10 @@ import '../styles/GlobalStyle.css';
 import '../styles/AddOrEditTaskPageStyle.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {TaskGroup} from "../common/models/task.interface";
 import axios from "../api/axios";
-import {AuthContext} from "../store/AuthContext";
 
 
 const AddOrEditTaskPage = () => {
@@ -25,8 +24,6 @@ const AddOrEditTaskPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const authContext = useContext(AuthContext);
-
     const [executors, setExecutors] = useState<any[]>(dummyExecutors)
     const [title, setTitle] = useState<string>();
     const [priorityOptions, setPriorityOptions] = useState<number[]>()
@@ -39,6 +36,14 @@ const AddOrEditTaskPage = () => {
     const [files, setFiles] = useState<FileList | undefined>();
     const [taskStatus, setTaskStatus] = useState()
 
+    const getExecutorsAndManagers = async () => {
+        const executorsResponse = await axios.get('/task/getUsers?type=izvrsilac', {
+            baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
+        console.log(executorsResponse);
+    }
 
     const generatePriorityOptions = () => {
         const options: number[] = []
@@ -72,16 +77,14 @@ const AddOrEditTaskPage = () => {
             title: taskTitle,
             priority,
             description,
-            executors: [26,27],
+            executors: [26, 27],
             taskGroupId: taskGroup?.id,
             dueDate,
             files,
             manager: null
         }
-        console.log(files)
         const token = await localStorage.getItem('token');
-        console.log(token);
-        const response = await axios.post(`/task/create.php`, data, {
+        await axios.post(`/task/create.php`, data, {
             baseURL: process.env.REACT_APP_BASE_URL,
             headers: {
                 'Access-Token': token,
@@ -89,11 +92,11 @@ const AddOrEditTaskPage = () => {
                 'Content-Length': 200
             }
         });
-        console.log(response);
     }
 
 
     useEffect(() => {
+        getExecutorsAndManagers();
         generatePriorityOptions();
         if (!location.state || !location.state.mode) return;
         setTitle(location.state.mode === 'EDIT' ? 'Edit Task' : 'Add Task');
@@ -171,8 +174,7 @@ const AddOrEditTaskPage = () => {
                     </div>
                     <div className={'form-field-container'}>
                         <label>File</label>
-                        <input type={'file'}
-                               multiple={true}
+                        <input multiple={true} type={'file'}
                                onChange={(event: ChangeEvent<HTMLInputElement>) => setFiles(event?.target?.files ? event.target.files : undefined)}/>
                     </div>
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
