@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../src/db/Database.php';
 checkRequestType('GET');
 $user = canUserAccess('izvrsilac');
 
-if (empty($_GET['from'])) {
+if (empty($_GET['id'])) {
     badRequest('Id missing!');
 }
 $id = htmlspecialchars(trim($_GET['id']));
