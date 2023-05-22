@@ -6,6 +6,7 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {TaskGroup} from "../common/models/task.interface";
 import axios from "../api/axios";
+import {User} from "../common/models/user.interface";
 
 
 const AddOrEditTaskPage = () => {
@@ -24,13 +25,15 @@ const AddOrEditTaskPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [executors, setExecutors] = useState<any[]>(dummyExecutors)
+    const [executors, setExecutors] = useState<User[]>([]);
+    const [managers, setManagers] = useState<User[]>([])
     const [title, setTitle] = useState<string>();
     const [priorityOptions, setPriorityOptions] = useState<number[]>()
     const [taskTitle, setTaskTitle] = useState<string>();
     const [priority, setPriority] = useState<string>();
     const [description, setDescription] = useState<string>();
-    const [selectedExecutors, setSelectedExecutors] = useState<any[]>([]);
+    const [selectedExecutors, setSelectedExecutors] = useState<number[]>([]);
+    const [selectedManager, setSelectedManager] = useState<number>()
     const [taskGroup, setTaskGroup] = useState<TaskGroup>();
     const [dueDate, setDueDate] = useState<string>();
     const [files, setFiles] = useState<FileList | undefined>();
@@ -43,7 +46,14 @@ const AddOrEditTaskPage = () => {
                 'Access-Token': token
             }
         })
-        console.log(executorsResponse);
+        const managersResponse = await axios.get('/task/getUsers.php?type=rukovodilac', {
+            baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                'Access-Token': token
+            }
+        })
+        console.log(managersResponse);
+        setManagers(managersResponse.data.data.users);
+        setExecutors(executorsResponse.data.data.users);
     }
 
     const generatePriorityOptions = () => {
@@ -78,14 +88,14 @@ const AddOrEditTaskPage = () => {
             title: taskTitle,
             priority,
             description,
-            executors: [26, 27],
+            executors: selectedExecutors,
             taskGroupId: taskGroup?.id,
             dueDate,
             files,
-            manager: null
+            manager: selectedManager
         }
         const token = await localStorage.getItem('token');
-        await axios.post(`/task/create.php`, data, {
+        const response = await axios.post(`/task/create.php`, data, {
             baseURL: process.env.REACT_APP_BASE_URL,
             headers: {
                 'Access-Token': token,
@@ -93,8 +103,8 @@ const AddOrEditTaskPage = () => {
                 'Content-Length': 200
             }
         });
+        console.log(response);
     }
-
 
     useEffect(() => {
         getExecutorsAndManagers();
@@ -143,14 +153,16 @@ const AddOrEditTaskPage = () => {
                                         checked={selectedExecutors.includes(executor.id)}
                                         onChange={() => handleExecutor(executor.id)}
                                     />
-                                    {executor.name}
+                                    {executor.firstName}
                                 </label></div>))}
                         </div>
                         <div className={'form-field-container'}>
                             <label>Managers</label>
-                            <select className={'user-select'}>
-                                {/*TODO add dynamic list of users*/}
-                                <option>Nemanja</option>
+                            <select value={selectedManager}
+                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => setSelectedManager(parseInt(event.target.value))}
+                                    className={'user-select'}>
+                                {managers.map(((manager) => (
+                                    <option key={manager.id} value={manager.id}>{manager.firstName}</option>)))}
                             </select>
                         </div>
                     </div>

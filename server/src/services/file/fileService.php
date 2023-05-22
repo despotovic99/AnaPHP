@@ -10,7 +10,7 @@ function storeTaskFiles(string $taskFolder, array $files): void
     $targetDir = __DIR__ . '/../../../uploads/' . $taskFolder;
     if (
         !is_dir($targetDir) &&
-        !mkdir($targetDir)
+        !mkdir($targetDir, 0777, true)
     ) {
         throw new TaskFilesException('Could not create folder for storing files');
     }
