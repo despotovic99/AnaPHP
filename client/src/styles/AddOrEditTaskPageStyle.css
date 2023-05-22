@@ -49,6 +49,7 @@
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
+    margin-top: 15px;
 }
 
 .radio-buttons-container .radio-button-container label {
@@ -95,4 +96,16 @@
     margin-bottom: 10px;
 }
 
+.form-fields-row .checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
+.checkbox-container label {
+    font-size: 20px;
+}
+
+.form-fields-row {
+    justify-content: space-between;
+}

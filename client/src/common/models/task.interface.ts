@@ -10,6 +10,6 @@ export interface Task {
 export interface TaskGroup {
     id: number
     name: string,
-    description: string,
-    numberOfTasks: number
+    description?: string,
+    numberOfTasks?: number
 }
