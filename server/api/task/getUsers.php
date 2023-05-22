@@ -21,7 +21,7 @@ if ($type && strtolower($type) !== 'admin') {
 }
 $result = $db->query($query);
 if (!$result || !($users = $result->fetchAll(PDO::FETCH_ASSOC))) {
-    badRequest('Users not found.');
+    $users = [];
 }
 sendResponse(['users' => $users]);
 // get all users
