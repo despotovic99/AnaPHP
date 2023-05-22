@@ -11,8 +11,14 @@ try {
 
     $db = Database::getConnection();
     $statement = $db->prepare(
-        'SELECT * FROM user
-            INNER JOIN userRole uR on user.userRoleId = uR.id
+        'SELECT 
+                user.id as id,
+                user.username as username,
+                user.email as email,
+                user.verifiedAt as verifiedAt,
+                uR.name as roleName
+            FROM user
+                INNER JOIN userRole uR on user.userRoleId = uR.id
             WHERE username=:username AND password=:password;'
     );
     $statement->bindParam('username', $username);
@@ -40,7 +46,7 @@ try {
         badRequest('User not logged in.');
     }
 
-    sendResponse(['token' => $token, 'role'=>$user['name'],'message' => 'User successfully logged in']);
+    sendResponse(['token' => $token, 'role'=>$user['roleName'],'message' => 'User successfully logged in']);
 } catch (Exception $e) {
     sendResponse(['message' => 'Server error'], 500, false);
 }
