@@ -50,7 +50,7 @@ try {
     storeTaskFiles($folderName, $_FILES['files']);
 
     $db->commit();
-} catch (Exception $exception) {
+} catch (\Throwable $exception) {
     $db->rollBack();
     $message = 'Error occurred, task not saved';
     if ($exception instanceof TaskFilesException) {

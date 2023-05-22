@@ -72,7 +72,7 @@ const AddOrEditTaskPage = () => {
             title: taskTitle,
             priority,
             description,
-            executors: selectedExecutors,
+            executors: [26,27],
             taskGroupId: taskGroup?.id,
             dueDate,
             files,
@@ -85,7 +85,7 @@ const AddOrEditTaskPage = () => {
             baseURL: process.env.REACT_APP_BASE_URL,
             headers: {
                 'Access-Token': token,
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'multipart/form-data',
                 'Content-Length': 200
             }
         });
@@ -172,6 +172,7 @@ const AddOrEditTaskPage = () => {
                     <div className={'form-field-container'}>
                         <label>File</label>
                         <input type={'file'}
+                               multiple={true}
                                onChange={(event: ChangeEvent<HTMLInputElement>) => setFiles(event?.target?.files ? event.target.files : undefined)}/>
                     </div>
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
