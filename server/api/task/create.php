@@ -13,6 +13,9 @@ $taskGroupId = getDataFromPostRequest('taskGroupId');
 $description = getDataFromPostRequest('description');
 $dueDate = getDataFromPostRequest('dueDate');
 $executors = getDataFromPostRequest('executors');
+if (!is_array($executors)) {
+    badRequest('Executors must be an array.');
+}
 
 $priority = getDataFromPostRequest('priority');
 if ($priority < 1 || $priority > 10) {
@@ -35,7 +38,14 @@ try {
         throw new Exception();
     }
     $taskId = $db->lastInsertId();
-
+    foreach ($executors as $executor) {
+        $statement = $db->prepare(
+            "INSERT INTO selectedTask (userId,taskId) VALUES (?,?)"
+        );
+        if (!$statement->execute([$executor, $taskId])) {
+            throw new Exception();
+        }
+    }
     $folderName .= '-' . $taskId;
     storeTaskFiles($folderName, $_FILES['files']);
 
