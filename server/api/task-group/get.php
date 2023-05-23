@@ -19,7 +19,7 @@ try {
     $statement = $db->prepare("SELECT * FROM taskGroup WHERE id=:id");
     $statement->bindParam('id', $id);
     $statement->execute();
-    if (!$statement || !($taskGroup = $statement->fetch(PDO::FETCH_ASSOC))) {
+    if (!($taskGroup = $statement->fetch(PDO::FETCH_ASSOC))) {
         badRequest('Can not get task group with provided id ' . $id);
     }
 
