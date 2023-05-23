@@ -36,6 +36,8 @@ try {
         throw new Exception();
     }
 
+    storeTaskFiles("task-$id", $_FILES['files']);
+
     $db->commit();
 } catch (Exception $exception) {
     $db->rollBack();
