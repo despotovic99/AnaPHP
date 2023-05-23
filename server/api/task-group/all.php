@@ -17,7 +17,7 @@ try {
     }
     $taskGroups = $result->fetchAll(PDO::FETCH_ASSOC);
 
-    sendResponse(['data' => $taskGroups]);
+    sendResponse(['taskGroups' => $taskGroups]);
 } catch (Exception $exception) {
     badRequest('Can not load all task groups.');
 }
