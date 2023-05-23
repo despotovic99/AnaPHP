@@ -8,9 +8,9 @@ import {Task} from "../common/models/task.interface";
 
 const TasksPage = () => {
     const navigate = useNavigate();
-    const tasksTableColumns = ['Title', 'Description', 'Due date', 'Priority', 'Task group'];
+    const tasksTableColumns = ['Title', 'Description', 'Due date', 'Priority', 'Task group', 'Akcije'];
 
-    const [tasks, setTasks] = useState<Task[]>()
+    const [tasks, setTasks] = useState<Task[]>([])
     const editTaskNavigationHandler = (taskId: number) => {
         navigate('/task', {state: {mode: 'EDIT', taskId}})
     }
@@ -28,6 +28,23 @@ const TasksPage = () => {
             toast.error(error?.response?.data?.message);
         }
     }
+    const deleteHandler = async (id: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.post('/task/delete.php', {id: id}, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token,
+                    'Content-Length': 80,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            });
+            setTasks(prevState => prevState.filter(group => group.id !== id));
+            toast.success('Successfully deleted!');
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error)
+        }
+    }
 
     useEffect(() => {
         getAllTasks();
@@ -40,7 +57,9 @@ const TasksPage = () => {
                 <button onClick={() => navigate('/task', {state: {mode: 'ADD'}})} className={'card-button'}>+ Add
                 </button>
             </div>
-            <Table columns={tasksTableColumns} onClick={editTaskNavigationHandler} tasks={tasks}/>
+            <Table hasActionButtons={true} columns={tasksTableColumns} onClickDelete={deleteHandler}
+                   onClick={editTaskNavigationHandler}
+                   tasks={tasks}/>
         </div>
     )
 }

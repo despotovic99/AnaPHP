@@ -34,6 +34,7 @@ function App() {
                 <Route path={'/tasks'} element={handleAuth(ScreenNames.tasksScreen)}/>
                 <Route path={'/task'} element={handleAuth(ScreenNames.taskScreen)}/>
                 <Route path={'/task-groups'} element={handleAuth(ScreenNames.taskGroupsScreen)}/>
+                <Route path={'/task-group'} element={handleAuth(ScreenNames.taskGroupScreen)}/>
             </Routes>
         </Router>
     );

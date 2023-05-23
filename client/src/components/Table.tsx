@@ -10,13 +10,14 @@ type TableHeaderProps = {
     taskGroups?: TaskGroup[]
     hasActionButtons?: boolean
     onClick: (id: number) => void
+    onClickDelete?: (id: number) => void
 }
 
 const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
 
-    const handleButtonClick = (event: any) => {
+    const handleButtonClick = (event: any, id: number) => {
         if (event.stopPropagation) event.stopPropagation();
-        //TODO implement function
+        props.onClickDelete && props.onClickDelete(id);
     }
 
     return (
@@ -39,7 +40,8 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                                     className={'action-button action-button-edit'}>
                                 Edit
                             </button>
-                            <button onClick={handleButtonClick} className={'action-button action-button-delete'}>
+                            <button onClick={(event) => handleButtonClick(event, item.id)}
+                                    className={'action-button action-button-delete'}>
                                 Delete
                             </button>
                         </div>}
@@ -52,12 +54,31 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                         {item.dueDate && <p>{item.dueDate}</p>}
                         <p>{item.priority}</p>
                         {item.taskGroupName && <p>{item.taskGroupName}</p>}
+                        {props.hasActionButtons && <div className={'action-buttons-container'}>
+                            <button onClick={props.onClick.bind(this, item.id)}
+                                    className={'action-button action-button-edit'}>
+                                Edit
+                            </button>
+                            <button onClick={(event) => handleButtonClick(event, item.id)}
+                                    className={'action-button action-button-delete'}>
+                                Delete
+                            </button>
+                        </div>}
                     </div>))}
                 {props.taskGroups?.map((taskGroup, index) => (
                     <div key={`${taskGroup.id}_${taskGroup.name}_${index}`} className={'table-row'}>
+                        <p>{taskGroup.id}</p>
                         <p>{taskGroup.name}</p>
-                        <p>{taskGroup.description}</p>
-                        <p>{taskGroup.numberOfTasks}</p>
+                        {props.hasActionButtons && <div className={'action-buttons-container'}>
+                            <button onClick={props.onClick.bind(this, taskGroup.id)}
+                                    className={'action-button action-button-edit'}>
+                                Edit
+                            </button>
+                            <button onClick={(event) => handleButtonClick(event, taskGroup.id)}
+                                    className={'action-button action-button-delete'}>
+                                Delete
+                            </button>
+                        </div>}
                     </div>
                 ))}
             </div>

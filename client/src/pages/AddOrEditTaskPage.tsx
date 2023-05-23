@@ -4,9 +4,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {TaskGroup} from "../common/models/task.interface";
+import {Task, TaskGroup} from "../common/models/task.interface";
 import axios from "../api/axios";
 import {User} from "../common/models/user.interface";
+import {toast} from "react-toastify";
 
 
 const AddOrEditTaskPage = () => {
@@ -25,6 +26,7 @@ const AddOrEditTaskPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [task, setTask] = useState<Task>();
     const [executors, setExecutors] = useState<User[]>([]);
     const [managers, setManagers] = useState<User[]>([])
     const [title, setTitle] = useState<string>();
@@ -37,23 +39,28 @@ const AddOrEditTaskPage = () => {
     const [taskGroup, setTaskGroup] = useState<TaskGroup>();
     const [dueDate, setDueDate] = useState<string>();
     const [files, setFiles] = useState<FileList | undefined>();
-    const [taskStatus, setTaskStatus] = useState()
+    const [taskStatus, setTaskStatus] = useState();
+    const [taskGroups, setTaskGroups] = useState<TaskGroup[]>([]);
 
     const getExecutorsAndManagers = async () => {
-        const token = await localStorage.getItem('token');
-        const executorsResponse = await axios.get('/task/getUsers.php?type=izvrsilac', {
-            baseURL: process.env.REACT_APP_BASE_URL, headers: {
-                'Access-Token': token
-            }
-        })
-        const managersResponse = await axios.get('/task/getUsers.php?type=rukovodilac', {
-            baseURL: process.env.REACT_APP_BASE_URL, headers: {
-                'Access-Token': token
-            }
-        })
-        console.log(managersResponse);
-        setManagers(managersResponse.data.data.users);
-        setExecutors(executorsResponse.data.data.users);
+        try {
+            const token = await localStorage.getItem('token');
+            const executorsResponse = await axios.get('/task/getUsers.php?type=izvrsilac', {
+                baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                    'Access-Token': token
+                }
+            })
+            const managersResponse = await axios.get('/task/getUsers.php?type=rukovodilac', {
+                baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                    'Access-Token': token
+                }
+            })
+            setManagers(managersResponse.data.data.users);
+            setExecutors(executorsResponse.data.data.users);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+
     }
 
     const generatePriorityOptions = () => {
@@ -83,6 +90,40 @@ const AddOrEditTaskPage = () => {
         setSelectedExecutors(updatedOptions)
     }
 
+    const getTask = async (id: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.get(`/task/get.php?id=${id}`, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token
+                }
+            });
+            console.log(response);
+            setTask(response.data.data.task);
+            const date = new Date(response.data.data.task.dueDate)
+            setDueDate(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
+            console.log(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+    }
+
+    const getAllTaskGroups = async () => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.get('/task-group/all.php', {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token
+                }
+            })
+            setTaskGroups(response.data.data.taskGroups);
+        } catch (error: any) {
+            toast.error(error?.data?.data?.message);
+        }
+    }
+
     const onClickSaveHandler = async () => {
         const data = {
             title: taskTitle,
@@ -110,6 +151,10 @@ const AddOrEditTaskPage = () => {
         getExecutorsAndManagers();
         generatePriorityOptions();
         if (!location.state || !location.state.mode) return;
+        if (location.state.taskId) {
+            getTask(location.state.taskId);
+        }
+        getAllTaskGroups();
         setTitle(location.state.mode === 'EDIT' ? 'Edit Task' : 'Add Task');
     }, [])
 
@@ -125,14 +170,14 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Title</label>
                             <input type={'text'}
-                                   value={taskTitle}
+                                   value={taskTitle ? taskTitle : task?.title}
                                    onChange={(event: ChangeEvent<HTMLInputElement>) => setTaskTitle(event.currentTarget.value)}/>
                         </div>
                         <div className={'form-field-container'}>
                             <label>Priority</label>
                             <select className={'select-priority'}
                                     onChange={(event: ChangeEvent<HTMLSelectElement>) => setPriority(event.target.value)}
-                                    value={priority}>
+                                    value={priority ? priority : task?.priority}>
                                 {priorityOptions && priorityOptions.map((option => (<option>{option}</option>)))}
                             </select>
                         </div>
@@ -140,7 +185,7 @@ const AddOrEditTaskPage = () => {
                     </div>
                     <div className={'form-field-container'}>
                         <label>Description</label>
-                        <textarea value={description}
+                        <textarea value={description ? description : task?.description}
                                   onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)}/>
                     </div>
                     <div className={'form-fields-row'}>
@@ -170,17 +215,19 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Task Group</label>
                             <select className={'user-select'}
-                                    value={taskGroup?.name}
+                                    value={taskGroup?.name ? taskGroup.name : task?.taskGroupName}
                                     onChange={handleTaskGroup}
                             >
                                 {/*TODO add dynamic list of groups*/}
-                                {dummyTaskGroups.map((group, index) => (
+                                {taskGroups.map((group, index) => (
                                     <option key={index} value={index}>{group.name}</option>))}
                             </select>
                         </div>
                         <div className={'form-field-container'}>
                             <label>Due Date</label>
-                            <input type={"date"} className={'due-date-input'} value={dueDate}
+                            <input type={"date"} className={'due-date-input'}
+                                   value={dueDate}
+                                   placeholder={'YYYY-MM-DD'}
                                    onChange={(event: ChangeEvent<HTMLDataElement>) => setDueDate(event.target.value)}
                             />
                         </div>

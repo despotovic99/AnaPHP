@@ -4,4 +4,5 @@ export enum ScreenNames {
     tasksScreen = 'TASKS_SCREEN',
     taskScreen = 'TASK_SCREEN',
     taskGroupsScreen = 'TASK_GROUPS_SCREEN',
+    taskGroupScreen = 'TASK_GROUP_SCREEN'
 }
