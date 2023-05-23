@@ -50,6 +50,7 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             })
+
             const managersResponse = await axios.get('/task/getUsers.php?type=rukovodilac', {
                 baseURL: process.env.REACT_APP_BASE_URL, headers: {
                     'Access-Token': token
@@ -100,10 +101,10 @@ const AddOrEditTaskPage = () => {
                 }
             });
             console.log(response);
+            console.log(response.data.data.task.files)
             setTask(response.data.data.task);
             const date = new Date(response.data.data.task.dueDate)
             setDueDate(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
-            console.log(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -125,6 +126,11 @@ const AddOrEditTaskPage = () => {
     }
 
     const onClickSaveHandler = async () => {
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(dueDate ? dueDate : '')) {
+            toast.error('Date invalid. Required format is YYYY-MM-DD');
+            return;
+        }
         const data = {
             title: taskTitle,
             priority,
@@ -144,8 +150,8 @@ const AddOrEditTaskPage = () => {
                 'Content-Length': 200
             }
         });
-        console.log(response);
     }
+
 
     useEffect(() => {
         getExecutorsAndManagers();
@@ -191,7 +197,7 @@ const AddOrEditTaskPage = () => {
                     <div className={'form-fields-row'}>
                         <div className={'checkbox-container'}>
                             <label>Executors</label>
-                            {executors.map((executor, index) => (
+                            {executors.length > 0 ? executors.map((executor, index) => (
                                 <div className={'options-container'}><label>
                                     <input
                                         type="checkbox"
@@ -199,15 +205,16 @@ const AddOrEditTaskPage = () => {
                                         onChange={() => handleExecutor(executor.id)}
                                     />
                                     {executor.firstName}
-                                </label></div>))}
+                                </label></div>)) : (<p>No executors found</p>)}
                         </div>
                         <div className={'form-field-container'}>
                             <label>Managers</label>
                             <select value={selectedManager}
                                     onChange={(event: ChangeEvent<HTMLSelectElement>) => setSelectedManager(parseInt(event.target.value))}
                                     className={'user-select'}>
-                                {managers.map(((manager) => (
-                                    <option key={manager.id} value={manager.id}>{manager.firstName}</option>)))}
+                                {managers.length > 0 ? managers.map(((manager) => (
+                                    <option key={manager.id} value={manager.id}>{manager.firstName}</option>))) : (
+                                    <option>No managers found</option>)}
                             </select>
                         </div>
                     </div>
@@ -218,14 +225,13 @@ const AddOrEditTaskPage = () => {
                                     value={taskGroup?.name ? taskGroup.name : task?.taskGroupName}
                                     onChange={handleTaskGroup}
                             >
-                                {/*TODO add dynamic list of groups*/}
                                 {taskGroups.map((group, index) => (
                                     <option key={index} value={index}>{group.name}</option>))}
                             </select>
                         </div>
                         <div className={'form-field-container'}>
                             <label>Due Date</label>
-                            <input type={"date"} className={'due-date-input'}
+                            <input type={"text"} className={'due-date-input'}
                                    value={dueDate}
                                    placeholder={'YYYY-MM-DD'}
                                    onChange={(event: ChangeEvent<HTMLDataElement>) => setDueDate(event.target.value)}
@@ -237,6 +243,10 @@ const AddOrEditTaskPage = () => {
                         <input multiple={true} type={'file'}
                                onChange={(event: ChangeEvent<HTMLInputElement>) => setFiles(event?.target?.files ? event.target.files : undefined)}/>
                     </div>
+                    {task && task.files && (<div className={'form-field-container'}>
+                        {Object.values(task?.files).map((file: any) => (<p>{file}</p>))}
+
+                    </div>)}
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
                         <p className={'label'}>Task Status</p>
                         <div className={'radio-button-container'}>

@@ -5,6 +5,7 @@ export interface Task {
     priority: number
     dueDate?: string,
     taskGroupName?: string
+    files?: any
 }
 
 export interface TaskGroup {
