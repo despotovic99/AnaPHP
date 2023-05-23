@@ -17,7 +17,6 @@ function storeTaskFiles(string $taskFolder, array $files): void
 
     $filesCount = count($files['name']);
     for ($i = 0; $i < $filesCount; $i++) {
-
         $fileFullPath = realpath($targetDir) . '/' . basename($files['name'][$i]);
         if (false === move_uploaded_file($files['tmp_name'][$i], $fileFullPath)) {
             throw new TaskFilesException('Task file not stored successfully');
@@ -49,4 +48,19 @@ function deleteFile(string $filePath)
         return;
     }
     unlink($filePath);
+}
+
+function getFiles($taskFolder): array
+{
+    $targetDir = __DIR__ . '/../../../uploads/' . $taskFolder;
+    if (!is_dir($targetDir)) {
+        return [];
+    }
+    $files = scandir($targetDir);
+    if (!$files) {
+        return [];
+    }
+    unset($files[0]);
+    unset($files[1]);
+    return $files;
 }

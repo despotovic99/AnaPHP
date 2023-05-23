@@ -51,6 +51,7 @@ try {
         $executors = [];
     }
     $task['executors'] = $executors;
+    $task['files'] = getFiles("task-$id");
     sendResponse(['task' => $task]);
 } catch (Exception $e) {
     badRequest('Could not found tasks!');
