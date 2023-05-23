@@ -23,7 +23,7 @@ try {
         badRequest('Can not get task group with provided id ' . $id);
     }
 
-    sendResponse(['data' => $taskGroup]);
+    sendResponse(['taskGroups' => $taskGroup]);
 } catch (Exception $exception) {
     badRequest('Error occurred while getting task group with id ' . $id);
 }
