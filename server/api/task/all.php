@@ -13,6 +13,8 @@ $dateTo = !empty($_GET['to']) ? htmlspecialchars($_GET['to']) : '';
 $priority = !empty($_GET['priority']) ? htmlspecialchars($_GET['priority']) : '';
 $executors = !empty($_GET['executors']) ? htmlspecialchars($_GET['executors']) : '';
 $taskTitle = !empty($_GET['title']) ? htmlspecialchars($_GET['title']) : '';
+$taskGroupId = !empty($_GET['taskGroup']) ? htmlspecialchars($_GET['taskGroup']) : '';
+$manager = !empty($_GET['manager']) ? htmlspecialchars($_GET['manager']) : '';
 
 $db = Database::getConnection();
 
@@ -29,7 +31,13 @@ try {
 
     $where = null;
     $groupBy = null;
-    if (($dateTo && $dateFrom) || $priority || $executors || $taskTitle) {
+    if (
+        ($dateTo && $dateFrom) ||
+        $priority ||
+        $executors ||
+        $taskGroupId ||
+        $manager ||
+        $taskTitle) {
         $where = ' WHERE ';
     }
 
@@ -46,6 +54,14 @@ try {
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
         $where .= " userId='{$user['userId']}' AND ";
+    }
+
+    if ($taskGroupId) {
+        $where .= "  tG.id='$taskGroupId' AND ";
+    }
+
+    if ($manager) {
+        $where .= "  t.managerId='$manager' AND ";
     }
 
     if ($taskTitle) {
