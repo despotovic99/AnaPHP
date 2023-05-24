@@ -6,10 +6,10 @@ require_once __DIR__ . '/../src/db/Database.php';
 
 checkRequestType();
 
-if (empty($_SERVER['HTTP_ACCESS_TOKEN'])) {
+if (empty($_SERVER['HTTP_RESET_PASSWORD_TOKEN'])) {
     unauthorized('You can not change a password.');
 }
-$token = $_SERVER['HTTP_ACCESS_TOKEN'];
+$token = $_SERVER['HTTP_RESET_PASSWORD_TOKEN'];
 $password = getDataFromPostRequest('password', false);
 $confirmedPassword = getDataFromPostRequest('confirmedPassword', false);
 
