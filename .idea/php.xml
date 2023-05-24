@@ -10,6 +10,12 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/server/vendor/composer" />
+      <path value="$PROJECT_DIR$/server/vendor/phpmailer/phpmailer" />
+    </include_path>
+  </component>
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter id="e032f796-ac99-4a05-ab68-2d72f33076c9" name="server" home="docker-compose://DATA" false="false" debugger_id="php.debugger.XDebug">

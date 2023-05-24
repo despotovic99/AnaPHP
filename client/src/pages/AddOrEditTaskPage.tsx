@@ -11,17 +11,6 @@ import {toast} from "react-toastify";
 
 
 const AddOrEditTaskPage = () => {
-    const dummyTaskGroups: TaskGroup[] = [
-        {id: 1, name: 'Task group 1', description: '1', numberOfTasks: 1},
-        {id: 2, name: 'Task group 2', description: '1', numberOfTasks: 1},
-        {id: 3, name: 'Task group 3', description: '1', numberOfTasks: 1},
-        {id: 4, name: 'Task group 4', description: '1', numberOfTasks: 1}
-    ]
-
-    const dummyExecutors: any = [
-        {id: 1, name: 'Petar'}, {id: 2, name: 'Marko'}, {id: 3, name: 'Mirko'}, {id: 4, name: 'Milos'},
-    ]
-
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,6 +28,7 @@ const AddOrEditTaskPage = () => {
     const [taskGroup, setTaskGroup] = useState<TaskGroup>();
     const [dueDate, setDueDate] = useState<string>();
     const [files, setFiles] = useState<FileList | undefined>();
+    const [filesToShow, setFilesToShow] = useState<string[]>([]);
     const [taskStatus, setTaskStatus] = useState();
     const [taskGroups, setTaskGroups] = useState<TaskGroup[]>([]);
 
@@ -74,8 +64,8 @@ const AddOrEditTaskPage = () => {
 
     const handleTaskGroup = (event: ChangeEvent<HTMLSelectElement>) => {
         setTaskGroup({
-            name: dummyTaskGroups[parseInt(event.target.value)].name,
-            id: dummyTaskGroups[parseInt(event.target.value)].id
+            name: taskGroups[parseInt(event.target.value)].name,
+            id: taskGroups[parseInt(event.target.value)].id
         });
     }
 
@@ -100,9 +90,9 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
-            console.log(response);
-            console.log(response.data.data.task.files)
             setTask(response.data.data.task);
+            const filesFromTask: string[] = Object.values(response.data.data.task.files)
+            setFilesToShow(filesFromTask);
             const date = new Date(response.data.data.task.dueDate)
             setDueDate(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
         } catch (error: any) {
@@ -141,17 +131,47 @@ const AddOrEditTaskPage = () => {
             files,
             manager: selectedManager
         }
-        const token = await localStorage.getItem('token');
-        const response = await axios.post(`/task/create.php`, data, {
-            baseURL: process.env.REACT_APP_BASE_URL,
-            headers: {
-                'Access-Token': token,
-                'Content-Type': 'multipart/form-data',
-                'Content-Length': 200
-            }
-        });
+        try {
+            const token = await localStorage.getItem('token');
+            await axios.post(`/task/create.php`, data, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token,
+                    'Content-Type': 'multipart/form-data',
+                    'Content-Length': 200
+                }
+            });
+            toast.success('Successfully saved!');
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
     }
 
+    const downloadFile = async (taskId: number) => {
+        const response = await axios.get(`/task/getFile.php?id=${taskId}`, {
+            baseURL: process.env.REACT_APP_BASE_URL,
+            responseType: 'blob'
+        });
+        const fileBlob = new Blob([response.data], {type: 'application/octet-stream'});
+        const fileUrl = URL.createObjectURL(fileBlob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = fileUrl;
+        downloadLink.setAttribute('download', 'filename.txt'); // Set the desired file name
+
+        // Programmatically trigger a click event on the link to start the download
+        downloadLink.click();
+
+        // Clean up the temporary URL
+        URL.revokeObjectURL(fileUrl);
+    }
+
+    const handleUploadingFiles = (event: ChangeEvent<HTMLInputElement>) => {
+        setFiles(event?.target?.files ? event.target.files : undefined);
+        console.log(event?.target?.files);
+        Object.values(event?.target?.files!).forEach(file => {
+            setFilesToShow(prevState => [...prevState, file.name])
+        })
+    }
 
     useEffect(() => {
         getExecutorsAndManagers();
@@ -222,11 +242,12 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Task Group</label>
                             <select className={'user-select'}
-                                    value={taskGroup?.name ? taskGroup.name : task?.taskGroupName}
-                                    onChange={handleTaskGroup}
+                                    value={taskGroup?.name}
                             >
                                 {taskGroups.map((group, index) => (
-                                    <option key={index} value={index}>{group.name}</option>))}
+                                    <option key={index}
+                                            onChange={() => setTaskGroup(group)}
+                                            value={group.id}>{group.name}</option>))}
                             </select>
                         </div>
                         <div className={'form-field-container'}>
@@ -241,11 +262,14 @@ const AddOrEditTaskPage = () => {
                     <div className={'form-field-container'}>
                         <label>File</label>
                         <input multiple={true} type={'file'}
-                               onChange={(event: ChangeEvent<HTMLInputElement>) => setFiles(event?.target?.files ? event.target.files : undefined)}/>
+                               onChange={handleUploadingFiles}/>
                     </div>
                     {task && task.files && (<div className={'form-field-container'}>
-                        {Object.values(task?.files).map((file: any) => (<p>{file}</p>))}
-
+                        <div className={'files-container'}>
+                            {filesToShow.map((file: string, index) => (
+                                <button key={index + '_' + task.id} onClick={() => downloadFile(task?.id)}
+                                        className={'file-download-button'}>{file}</button>))}
+                        </div>
                     </div>)}
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
                         <p className={'label'}>Task Status</p>
