@@ -15,7 +15,8 @@ $id = htmlspecialchars(trim($_GET['id']));
 
 $db = Database::getConnection();
 try {
-    $query = "SELECT t.title,
+    $query = "SELECT t.id as taskId,
+                    t.title,
                    t.priority,
                    t.description,
                    t.dueDate, 
