@@ -23,7 +23,7 @@ try {
     header("Content-Length:" . filesize($filePath));
     header("Content-Disposition: attachment; filename=$fileName");
     readfile($filePath);
-    die();
+    die($fileName);
 } catch (Exception $exception) {
     badRequest('Error occurred, file not downloaded');
 }
