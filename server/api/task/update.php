@@ -14,6 +14,10 @@ $taskGroupId = getDataFromPostRequest('taskGroupId');
 $description = getDataFromPostRequest('description');
 $dueDate = getDataFromPostRequest('dueDate');
 $executors = getDataFromPostRequest('executors');
+$status = getDataFromPostRequest('status', false);
+if (!$status) {
+    $status = null;
+}
 
 $priority = getDataFromPostRequest('priority');
 if ($priority < 1 || $priority > 10) {
@@ -30,9 +34,9 @@ try {
     $db->beginTransaction();
 
     $statement = $db->prepare(
-        "UPDATE task SET title=?, description=?,dueDate=?,priority=?,taskGroupId=?,managerId=? WHERE id=?"
+        "UPDATE task SET title=?, description=?,dueDate=?,priority=?,taskGroupId=?,managerId=?,status=? WHERE id=?"
     );
-    if (!$statement->execute([$title, $description, $dueDate, $priority, $taskGroupId, $manager,$id])) {
+    if (!$statement->execute([$title, $description, $dueDate, $priority, $taskGroupId, $manager, $status, $id])) {
         throw new Exception();
     }
 
