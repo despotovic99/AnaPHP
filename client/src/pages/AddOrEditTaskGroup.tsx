@@ -4,7 +4,6 @@ import {useLocation, useNavigate} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {toast} from "react-toastify";
 import axios from "axios";
-import {TaskGroup} from "../common/models/task.interface";
 
 const AddOrEditTaskGroup = () => {
 
@@ -45,7 +44,6 @@ const AddOrEditTaskGroup = () => {
                 await axios.post(`/task-group/update.php`, {name: taskGroupName, id: location.state.id}, config)
             }
         } catch (error: any) {
-            console.log(error);
             toast.error(error?.response?.data?.data?.error);
         }
 

@@ -19,7 +19,6 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
         if (event.stopPropagation) event.stopPropagation();
         props.onClickDelete && props.onClickDelete(id);
     }
-
     return (
         <div className={'table'}>
             <div className={'table-header'}>

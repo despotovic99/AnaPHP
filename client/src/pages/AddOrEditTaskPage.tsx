@@ -1,14 +1,13 @@
 import '../styles/GlobalStyle.css';
 import '../styles/AddOrEditTaskPageStyle.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faTimes} from "@fortawesome/free-solid-svg-icons";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Task, TaskGroup} from "../common/models/task.interface";
+import {Comment, Task, TaskGroup} from "../common/models/task.interface";
 import axios from "../api/axios";
 import {User} from "../common/models/user.interface";
 import {toast} from "react-toastify";
-
 
 const AddOrEditTaskPage = () => {
 
@@ -21,16 +20,17 @@ const AddOrEditTaskPage = () => {
     const [title, setTitle] = useState<string>();
     const [priorityOptions, setPriorityOptions] = useState<number[]>()
     const [taskTitle, setTaskTitle] = useState<string>();
-    const [priority, setPriority] = useState<string>();
+    const [priority, setPriority] = useState<string>('1');
     const [description, setDescription] = useState<string>();
     const [selectedExecutors, setSelectedExecutors] = useState<number[]>([]);
     const [selectedManager, setSelectedManager] = useState<number>()
-    const [taskGroup, setTaskGroup] = useState<TaskGroup>();
+    const [taskGroup, setTaskGroup] = useState<number>();
     const [dueDate, setDueDate] = useState<string>();
     const [files, setFiles] = useState<FileList | undefined>();
     const [filesToShow, setFilesToShow] = useState<string[]>([]);
     const [taskStatus, setTaskStatus] = useState();
     const [taskGroups, setTaskGroups] = useState<TaskGroup[]>([]);
+    const [comments, setComments] = useState<Comment[]>([]);
 
     const getExecutorsAndManagers = async () => {
         try {
@@ -63,10 +63,7 @@ const AddOrEditTaskPage = () => {
     }
 
     const handleTaskGroup = (event: ChangeEvent<HTMLSelectElement>) => {
-        setTaskGroup({
-            name: taskGroups[parseInt(event.target.value)].name,
-            id: taskGroups[parseInt(event.target.value)].id
-        });
+        setTaskGroup(parseInt(event.target.value));
     }
 
     const handleExecutor = (optionId: number) => {
@@ -126,7 +123,7 @@ const AddOrEditTaskPage = () => {
             priority,
             description,
             executors: selectedExecutors,
-            taskGroupId: taskGroup?.id,
+            taskGroupId: taskGroup,
             dueDate,
             files,
             manager: selectedManager
@@ -147,42 +144,100 @@ const AddOrEditTaskPage = () => {
         }
     }
 
-    const downloadFile = async (taskId: number) => {
-        const response = await axios.get(`/task/getFile.php?id=${taskId}`, {
-            baseURL: process.env.REACT_APP_BASE_URL,
-            responseType: 'blob'
-        });
-        const fileBlob = new Blob([response.data], {type: 'application/octet-stream'});
-        const fileUrl = URL.createObjectURL(fileBlob);
-        const downloadLink = document.createElement('a');
-        downloadLink.href = fileUrl;
-        downloadLink.setAttribute('download', 'filename.txt'); // Set the desired file name
 
-        // Programmatically trigger a click event on the link to start the download
-        downloadLink.click();
+    const downloadFile = async (taskId: number, fileName: string) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.get(`/task/getFile.php?id=${taskId}&fileName=${fileName}`, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                responseType: 'blob',
+                headers: {
+                    'Access-Token': token
+                }
+            });
+            const fileBlob = new Blob([response.data], {type: 'application/octet-stream'});
+            const fileUrl = URL.createObjectURL(fileBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = fileUrl;
+            downloadLink.setAttribute('download', fileName); // Set the desired file name
 
-        // Clean up the temporary URL
-        URL.revokeObjectURL(fileUrl);
+            // Programmatically trigger a click event on the link to start the download
+            downloadLink.click();
+
+            // Clean up the temporary URL
+            URL.revokeObjectURL(fileUrl);
+        } catch (error: any) {
+            toast.error('File not downloaded!');
+        }
+
     }
 
     const handleUploadingFiles = (event: ChangeEvent<HTMLInputElement>) => {
         setFiles(event?.target?.files ? event.target.files : undefined);
-        console.log(event?.target?.files);
         Object.values(event?.target?.files!).forEach(file => {
             setFilesToShow(prevState => [...prevState, file.name])
         })
     }
 
+    const getComments = async (taskId: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.get(`/comment/all.php?taskId=${taskId}`, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token
+                }
+            });
+            setComments(response.data.data.comments);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error)
+        }
+    }
+
+    const deleteCommentHandler = async (id: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            await axios.post('/comment/delete.php', {id: id}, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Access-Token': token
+                }
+            });
+            setComments(prevState => prevState.filter(comment => comment.id !== id));
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+    }
+
+    const deleteFileHandler = async (id: number, fileName: string) => {
+        try {
+            const token = await localStorage.getItem('token');
+            await axios.post('/task/deleteFile.php', {id: id, fileName: fileName}, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Access-Token': token
+                }
+            });
+            setFilesToShow(prevState => prevState.filter(file => file !== fileName));
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+    }
+
     useEffect(() => {
         getExecutorsAndManagers();
         generatePriorityOptions();
+        getAllTaskGroups();
         if (!location.state || !location.state.mode) return;
         if (location.state.taskId) {
+            getComments(location.state.taskId);
             getTask(location.state.taskId);
         }
-        getAllTaskGroups();
         setTitle(location.state.mode === 'EDIT' ? 'Edit Task' : 'Add Task');
     }, [])
+
 
     return (<div className={'card'}>
         <div className={'detail-card-container'}>
@@ -242,12 +297,12 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Task Group</label>
                             <select className={'user-select'}
-                                    value={taskGroup?.name}
+                                    value={taskGroup}
+                                    onChange={handleTaskGroup}
                             >
                                 {taskGroups.map((group, index) => (
                                     <option key={index}
-                                            onChange={() => setTaskGroup(group)}
-                                            value={group.id}>{group.name}</option>))}
+                                            value={group.id}>{group?.name}</option>))}
                             </select>
                         </div>
                         <div className={'form-field-container'}>
@@ -267,8 +322,13 @@ const AddOrEditTaskPage = () => {
                     {task && task.files && (<div className={'form-field-container'}>
                         <div className={'files-container'}>
                             {filesToShow.map((file: string, index) => (
-                                <button key={index + '_' + task.id} onClick={() => downloadFile(task?.id)}
-                                        className={'file-download-button'}>{file}</button>))}
+                                <div className={'file-preview-container'}>
+                                    <button key={index + '_' + task?.id}
+                                            onClick={() => downloadFile(task?.id, file)}
+                                            className={'file-download-button'}>{file}</button>
+                                    <FontAwesomeIcon className={'times-icon'} icon={faTimes}
+                                                     onClick={() => deleteFileHandler(task?.id, file)}/>
+                                </div>))}
                         </div>
                     </div>)}
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
@@ -282,8 +342,16 @@ const AddOrEditTaskPage = () => {
                             <input type={'radio'} name={'task-status'}/>
                         </div>
                     </div>}
+                    {location.state.mode === 'EDIT' && comments.length > 0 && <div className={'all-comments-container'}>
+                        <label>All comments</label>
+                        {comments.map(comment => (<div className={'show-comment-container'}><textarea disabled={true}
+                                                                                                      value={comment.content}/>
+                            <button onClick={() => deleteCommentHandler(comment.id)}>Delete</button>
+                        </div>))}
+
+                    </div>}
                     {location.state.mode === 'EDIT' && <div className={'comment-container'}>
-                        <label>Comment</label>
+                        <label>Add Comment</label>
                         <textarea/>
                     </div>}
                     <button className={'save-button'} onClick={onClickSaveHandler}>Save</button>

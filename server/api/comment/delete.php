@@ -9,7 +9,6 @@ $user = canUserAccess('izvrsilac');
 
 $db = Database::getConnection();
 $id = getDataFromPostRequest('id');
-$content = getDataFromPostRequest('content');
 
 if (!in_array(strtolower($user['userRole']), ['admin', 'rukovodilac'])) {
     $statement = $db->prepare("SELECT * FROM comment WHERE id=? AND userId=?");

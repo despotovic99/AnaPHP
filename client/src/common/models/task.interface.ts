@@ -14,3 +14,10 @@ export interface TaskGroup {
     description?: string,
     numberOfTasks?: number
 }
+
+export interface Comment {
+    id: number;
+    content: string;
+    userId: number,
+    taskId: number
+}

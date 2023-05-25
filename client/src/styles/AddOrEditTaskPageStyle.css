@@ -11,7 +11,7 @@
 .form-container .files-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     max-width: 40vw;
 }
 
@@ -22,6 +22,17 @@
     border: none;
     font-size: 15px;
     font-weight: bold;
+}
+
+.file-preview-container {
+    display: flex;
+    align-items: center;
+}
+
+.file-preview-container .times-icon {
+    background: #8DB6D8;
+    padding: 10px;
+    color: white;
 }
 
 .form-field-container {
@@ -92,10 +103,25 @@
 
 }
 
-.comment-container {
+.all-comments-container, .comment-container {
     margin: 4vh 0;
     display: flex;
     flex-direction: column;
+}
+
+.show-comment-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.show-comment-container button {
+    padding: 10px 15px;
+    outline: none;
+    background: #2148C0;
+    color: #EFEFED;
+    border: none;
+    border-radius: 10px;
 }
 
 .comment-container textarea {
@@ -107,7 +133,18 @@
     font-size: 18px;
 }
 
-.comment-container label {
+.all-comments-container textarea {
+    outline: none;
+    border-radius: 10px;
+    border: 1px solid #A8AFB4;
+    min-height: 5vh;
+    padding: 10px;
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.all-comments-container, .comment-container label {
     font-size: 20px;
     margin-bottom: 10px;
 }
