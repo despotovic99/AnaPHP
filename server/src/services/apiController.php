@@ -51,7 +51,7 @@ function checkRequestType(string $type = 'POST')
     header("Access-Control-Allow-Origin: http://localhost:3000");
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
     header(
-        "Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, Content-Type,Content-Length, Accept, Access-Token"
+        "Access-Control-Allow-Headers: Authorization, Origin, X-Requested-With, Content-Type,Content-Length, Accept, Access-Token,x-xsrf-token"
     );
     header('Access-Control-Allow-Credentials: true');
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

@@ -22,7 +22,7 @@ if (!in_array(strtolower($user['userRole']), ['admin', 'rukovodilac'])) {
 
 try {
     $db->beginTransaction();
-    $statement = $db->prepare("DELETE FROM comment WHERE id='$id'");
+    $statement = $db->prepare("DELETE FROM comment WHERE id=?");
     $statement->execute([$id]);
     $db->commit();
 } catch (\Throwable $e) {
