@@ -10,6 +10,7 @@ const AuthProvider = ({children}: any) => {
     const [authState, setAuthState] = useState<Login>({
         accessToken: '',
         authenticated: false,
+        roleName: ''
     });
 
     const logout = async () => {
@@ -17,6 +18,7 @@ const AuthProvider = ({children}: any) => {
             setAuthState({
                 accessToken: '',
                 authenticated: false,
+                roleName: ''
             });
 
             await localStorage.clear();

@@ -12,10 +12,16 @@ import {AuthContext} from "./store/AuthContext";
 function App() {
     const authContext = useContext(AuthContext);
 
+
+    useEffect(() => {
+    }, [])
     //function for displaying specific screen based on authentication
     const handleAuth = (screen: string) => {
         const isLoggedIn = localStorage.getItem('loggedIn') === 'true'
-        return isLoggedIn ? <BasicLayout screenName={screen}/> : <Navigate replace={true} to={'/login'}/>
+        const isAdmin = localStorage.getItem('role') === 'admin'
+
+        return isLoggedIn ? <BasicLayout screenName={screen}/> :
+            <Navigate replace={true} to={'/login'}/>
     }
 
     useEffect(() => {

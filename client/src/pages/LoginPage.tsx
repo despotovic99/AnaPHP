@@ -35,9 +35,11 @@ const LoginPage = () => {
             const response = await loginUserRequest(loginDto);
             await localStorage.setItem('loggedIn', 'true');
             await localStorage.setItem('token', response.data.data.token);
+            await localStorage.setItem('role', response.data.data.role);
             const loginObject: Login = {
                 accessToken: response.data.data.token,
-                authenticated: true
+                authenticated: true,
+                roleName: response.data.data.role
             }
             //setting login information in context because I need this information in whole application
             authContext.setAuth(loginObject);

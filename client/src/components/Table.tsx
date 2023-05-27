@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import '../styles/TableStyle.css'
 import {User, UserRole} from "../common/models/user.interface";
 import {Task, TaskGroup} from "../common/models/task.interface";
@@ -17,6 +17,7 @@ type TableHeaderProps = {
 
 const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
 
+    const [roleName, setRoleName] = useState('');
     const handleButtonClick = (event: any, id: number) => {
         if (event.stopPropagation) event.stopPropagation();
         props.onClickDelete && props.onClickDelete(id);
@@ -25,6 +26,15 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
         if (event.stopPropagation) event.stopPropagation();
         props.finishTask && props.finishTask(id);
     }
+    const getRole = async () => {
+        const role = await localStorage.getItem('role')
+        if (!role) return;
+        setRoleName(role);
+    }
+
+    useEffect(() => {
+        getRole();
+    }, [])
 
     return (
         <div className={'table'}>
@@ -65,10 +75,11 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                                     className={'action-button action-button-delete'}>
                                 Delete
                             </button>
-                            <button onClick={(event) => finishTaskHandler(event, item.id)}
-                                    className={'action-button action-button-finish'}>
-                                Finish
-                            </button>
+                            {roleName?.toLowerCase() === 'izvrsilac' &&
+                                <button onClick={(event) => finishTaskHandler(event, item.id)}
+                                        className={'action-button action-button-finish'}>
+                                    Finish
+                                </button>}
                         </div>}
                     </div>))}
                 {props.taskGroups?.map((taskGroup, index) => (

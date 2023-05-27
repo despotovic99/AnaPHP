@@ -11,6 +11,7 @@ const UsersPage = () => {
     const usersTableColumns = ['First name', 'Last name', 'Role', 'Phone number', 'Date of birth', 'Actions'];
     const navigate = useNavigate();
 
+
     const [users, setUsers] = useState<User[]>([])
     const editUserNavigationHandler = (userId: number) => {
         navigate('/user', {state: {mode: 'EDIT', userId}})
@@ -27,6 +28,11 @@ const UsersPage = () => {
             });
             setUsers(response.data.data.users);
         } catch (error: any) {
+            const role = await localStorage.getItem('role');
+            if (role?.toLowerCase() !== 'admin') {
+                navigate('/tasks');
+                return;
+            }
             toast.error(error?.response?.data?.data?.error);
         }
     }

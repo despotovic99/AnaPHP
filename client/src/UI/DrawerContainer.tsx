@@ -15,18 +15,23 @@ const DrawerContainer = () => {
     const location = useLocation();
     const authContext = useContext(AuthContext)
     const [activeDrawerItem, setActiveDrawerItem] = useState('/');
-
+    const [roleName, setRoleName] = useState<string>('');
     const navigationHandler = (screen: string) => {
         navigate(screen);
     }
-
+    const getRole = async () => {
+        const role = await localStorage.getItem('role')
+        if (!role) return;
+        setRoleName(role);
+    }
     const logoutHandler = async () => {
         try {
-            await localStorage.clear();
-            navigate('/login');
             const token = await localStorage.getItem('token');
             if (!token) return;
-            await logoutUserRequest(token);
+            const response = await logoutUserRequest(token);
+            console.log(response);
+            await localStorage.clear();
+            navigate('/login');
         } catch (error: any) {
             toast.error(error.response.data.data.error);
         }
@@ -38,31 +43,35 @@ const DrawerContainer = () => {
 
     useEffect(() => {
         setActiveDrawerItem(location.pathname);
+        getRole();
     }, [location.pathname])
 
     return (
         <div className={'drawer-container'}>
             <div className={'drawer-items-container'}>
-                <div className={getItemContainerClassName('/')}
-                     onClick={navigationHandler.bind(this, '/')}>
-                    <FontAwesomeIcon icon={faUser} className={'icon'}/>
-                    <p>Users</p>
-                </div>
-                <div className={getItemContainerClassName('/user-roles')}
-                     onClick={navigationHandler.bind(this, '/user-roles')}>
-                    <FontAwesomeIcon icon={faGear} className={'icon'}/>
-                    <p>User Roles</p>
-                </div>
+                {roleName?.toLowerCase() === 'admin' && <>
+                    <div className={getItemContainerClassName('/')}
+                         onClick={navigationHandler.bind(this, '/')}>
+                        <FontAwesomeIcon icon={faUser} className={'icon'}/>
+                        <p>Users</p>
+                    </div>
+                    <div className={getItemContainerClassName('/user-roles')}
+                         onClick={navigationHandler.bind(this, '/user-roles')}>
+                        <FontAwesomeIcon icon={faGear} className={'icon'}/>
+                        <p>User Roles</p>
+                    </div>
+                </>
+                }
                 <div className={getItemContainerClassName('/tasks')}
                      onClick={navigationHandler.bind(this, '/tasks')}>
                     <FontAwesomeIcon icon={faTasks} className={'icon'}/>
                     <p>Tasks</p>
                 </div>
-                <div className={getItemContainerClassName('/task-groups')}
-                     onClick={navigationHandler.bind(this, '/task-groups')}>
+                {roleName.toLowerCase() !== 'izvrsilac' && <div className={getItemContainerClassName('/task-groups')}
+                                                                onClick={navigationHandler.bind(this, '/task-groups')}>
                     <FontAwesomeIcon icon={faObjectGroup} className={'icon'}/>
                     <p>Task Groups</p>
-                </div>
+                </div>}
                 <div className={'drawer-item-container inactive'} onClick={logoutHandler}>
                     <FontAwesomeIcon icon={faSignOut} className={'icon'}/>
                     <p>Logout</p>
