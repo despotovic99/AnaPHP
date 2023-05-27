@@ -53,6 +53,7 @@ try {
     }
     $task['executors'] = $executors;
     $task['files'] = getFiles("task-$id");
+    $task['dueDate'] = (new DateTime($task['dueDate']))->format('Y-m-d');
     sendResponse(['task' => $task]);
 } catch (Exception $e) {
     badRequest('Could not found tasks!');
