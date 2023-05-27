@@ -11,27 +11,21 @@ canUserAccess('admin');
 $id = getDataFromPostRequest('id');
 $username = getDataFromPostRequest('username');
 $email = getDataFromPostRequest('email');
-$password = getDataFromPostRequest('password');
-$confirmedPassword = getDataFromPostRequest('confirmedPassword');
 $firstName = getDataFromPostRequest('firstName');
 $lastName = getDataFromPostRequest('lastName');
-$phoneNumber = getDataFromPostRequest('phoneNumber', false);
-$dateOfBirth = getDataFromPostRequest('dateOfBirth', false);
+$phoneNumber = getDataFromPostRequest('phone', false);
+$dateOfBirth = getDataFromPostRequest('birthday', false);
 $roleId = intval(getDataFromPostRequest('roleId'));
 
 if (!$roleId) {
     badRequest('Invalid role provided.');
 }
 
-if ($password != $confirmedPassword) {
-    badRequest('Passwords does not match!');
-}
 
 $result = updateUser(
     $id,
     $username,
     $email,
-    $password,
     $firstName,
     $lastName,
     $phoneNumber,

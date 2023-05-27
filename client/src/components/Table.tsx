@@ -35,19 +35,15 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
             <div className={'table-body'}>
                 {props.users?.map((item: User, index: number) => (
                     <div key={index} className={'table-row'} onClick={props.onClick.bind(this, item.id)}>
-                        <p>{item.firstName}</p>
-                        <p>{item.lastName}</p>
-                        <p>{item.role}</p>
-                        <p>{item.phoneNumber}</p>
-                        <p>{item.dateOfBirth}</p>
+                        <p className={'column'}>{item.firstName}</p>
+                        <p className={'column'}>{item.lastName}</p>
+                        <p className={'column'}>{item.userRole}</p>
+                        <p className={'column'}> {item.phone}</p>
+                        <p className={'column'}>{item.birthday}</p>
                         {props.hasActionButtons && <div className={'action-buttons-container'}>
                             <button onClick={props.onClick.bind(this, item.id)}
                                     className={'action-button action-button-edit'}>
                                 Edit
-                            </button>
-                            <button onClick={(event) => handleButtonClick(event, item.id)}
-                                    className={'action-button action-button-delete'}>
-                                Delete
                             </button>
                         </div>}
                     </div>))}

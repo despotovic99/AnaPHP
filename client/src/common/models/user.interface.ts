@@ -4,8 +4,11 @@ export interface User {
     email?: string,
     firstName: string,
     lastName: string,
-    dateOfBirth: string,
-    phoneNumber: string
-    role: string
+    birthday: string,
+    phone: string
+    userRole: string
+    password?: string,
+    confirmedPassword?: string
+    roleId: number
 }
 

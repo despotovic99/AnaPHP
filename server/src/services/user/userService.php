@@ -14,9 +14,10 @@ function registerUser(
     string $lastName,
     string $phoneNumber,
     string $dateOfBirth,
-    int $userRoleId = null,
-    bool $sendActivationMail = true
-): bool|string {
+    int    $userRoleId = null,
+    bool   $sendActivationMail = true
+): bool|string
+{
     $db = Database::getConnection();
 
     $password = hash('md5', $password);
@@ -84,22 +85,18 @@ function registerUser(
 }
 
 function updateUser(
-    int $id,
+    int    $id,
     string $username,
     string $email,
-    string $password,
     string $firstName,
     string $lastName,
     string $phoneNumber,
     string $dateOfBirth,
-    int $userRoleId,
-) {
+    int    $userRoleId,
+)
+{
     $db = Database::getConnection();
 
-    $password = hash('md5', $password);
-    if (false !== ($result = usernameAndEmailAlreadyTaken($username, $email, $id))) {
-        return $result;
-    }
 
     $birthday = null;
     if (!empty($dateOfBirth)) {
@@ -119,7 +116,6 @@ function updateUser(
 
         $query = "UPDATE user SET 
                 username=:username, 
-                password=:password,
                 firstName=:firstName,
                 lastName=:lastName,
                 phone=:phone,
@@ -130,7 +126,6 @@ function updateUser(
 
         $statement = $db->prepare($query);
         $statement->bindParam('username', $username);
-        $statement->bindParam('password', $password);
         $statement->bindParam('firstName', $firstName);
         $statement->bindParam('lastName', $lastName);
         $statement->bindParam('phone', $phoneNumber);

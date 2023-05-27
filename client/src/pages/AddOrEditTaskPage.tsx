@@ -128,14 +128,12 @@ const AddOrEditTaskPage = () => {
             toast.error('Files can not be empty!');
             return;
         }
-        console.log(files);
         const dto = {
             ...task,
             executors: selectedExecutors,
             priority: task.priority ? task.priority : 1,
             files: files
         }
-        console.log(dto);
         try {
             const token = await localStorage.getItem('token');
             const config = {
@@ -264,6 +262,7 @@ const AddOrEditTaskPage = () => {
             toast.error(error?.response?.data?.data?.error);
         }
     }
+
 
     useEffect(() => {
         getExecutorsAndManagers();

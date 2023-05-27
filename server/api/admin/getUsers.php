@@ -12,7 +12,7 @@ $id = !empty($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
 
 $db = Database::getConnection();
 
-$query = "SELECT u.id,username,firstName,lastName,phone,email, birthday,uR.name as userRole 
+$query = "SELECT u.id,username,firstName,lastName,phone,email, birthday,uR.name as userRole, uR.id as roleId
                 FROM user u INNER JOIN userRole uR on u.userRoleId=uR.id";
 if ($id) {
     $query .= " WHERE u.id='$id'";

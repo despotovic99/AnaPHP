@@ -14,8 +14,8 @@ $password = getDataFromPostRequest('password');
 $confirmedPassword = getDataFromPostRequest('confirmedPassword');
 $firstName = getDataFromPostRequest('firstName');
 $lastName = getDataFromPostRequest('lastName');
-$phoneNumber = getDataFromPostRequest('phoneNumber', false);
-$dateOfBirth = getDataFromPostRequest('dateOfBirth', false);
+$phoneNumber = getDataFromPostRequest('phone', false);
+$dateOfBirth = getDataFromPostRequest('birthday', false);
 $roleId = intval(getDataFromPostRequest('roleId'));
 
 if (!$roleId) {
