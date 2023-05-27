@@ -27,6 +27,7 @@ const AddOrEditTaskPage = () => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentText, setCommentText] = useState('');
 
+
     const getExecutorsAndManagers = async () => {
         try {
             const token = await localStorage.getItem('token');
@@ -81,6 +82,7 @@ const AddOrEditTaskPage = () => {
             response.data.data.task.executors.forEach((executor: any) => executorsArray.push(executor.userId));
             setSelectedExecutors(executorsArray);
             setTask(response.data.data.task);
+            setFiles(response.data.data.task.files);
             const filesFromTask: string[] = Object.values(response.data.data.task.files)
             setFilesToShow(filesFromTask);
         } catch (error: any) {
@@ -122,13 +124,18 @@ const AddOrEditTaskPage = () => {
             toast.error('Date invalid. Required format is YYYY-MM-DD');
             return;
         }
+        if (filesToShow.length < 1) {
+            toast.error('Files can not be empty!');
+            return;
+        }
+        console.log(files);
         const dto = {
             ...task,
             executors: selectedExecutors,
             priority: task.priority ? task.priority : 1,
             files: files
         }
-
+        console.log(dto);
         try {
             const token = await localStorage.getItem('token');
             const config = {
@@ -145,8 +152,9 @@ const AddOrEditTaskPage = () => {
                     ...dto,
                     id: location.state.taskId,
                     status: taskStatus,
-                })
+                }, config)
             }
+            //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
@@ -237,7 +245,6 @@ const AddOrEditTaskPage = () => {
             toast.error(error?.response?.data?.data?.error);
         }
     }
-
     const saveCommentHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
@@ -364,14 +371,15 @@ const AddOrEditTaskPage = () => {
                                 </div>))}
                         </div>
                     </div>)}
-                    {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
-                        <p className={'label'}>Task Status</p>
-                        <div className={'radio-button-container'}>
-                            <label>Completed</label>
-                            <input
-                                onChange={(event: ChangeEvent<HTMLInputElement>) => setTaskStatus(event.target.checked)}
-                                type={'radio'} name={'task-status'}/>
-                        </div>
+
+                    {location.state.mode === 'EDIT' && <div className={'form-field-container'}>
+                        <label>Task status</label>
+                        <select value={task.status ? task.status : ''}
+                                onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'status')}
+                                className={'user-select'}>
+                            <option>Completed</option>
+                            <option>Canceled</option>
+                        </select>
                     </div>}
                     {location.state.mode === 'EDIT' && comments.length > 0 && <div className={'all-comments-container'}>
                         <label>All comments</label>

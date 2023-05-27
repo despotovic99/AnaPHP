@@ -9,7 +9,7 @@ export interface Task {
     managerId?: number
     taskGroupId?: number
     executors?: { firstName: string, userId: number }[],
-    status?: boolean
+    status?: string
 }
 
 export interface TaskGroup {

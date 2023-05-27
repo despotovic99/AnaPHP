@@ -71,3 +71,13 @@
 .action-button:hover {
     cursor: pointer;
 }
+
+.column {
+    min-width: 6vw;
+    max-width: 14vw;
+}
+
+.priority-column {
+    width: 3vw;
+    text-align: center;
+}

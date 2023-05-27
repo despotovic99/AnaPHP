@@ -11,6 +11,7 @@ type TableHeaderProps = {
     hasActionButtons?: boolean
     onClick: (id: number) => void
     onClickDelete?: (id: number) => void
+    finishTask?: (id: number) => void
 }
 
 const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
@@ -19,6 +20,11 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
         if (event.stopPropagation) event.stopPropagation();
         props.onClickDelete && props.onClickDelete(id);
     }
+    const finishTaskHandler = (event: any, id: number) => {
+        if (event.stopPropagation) event.stopPropagation();
+        props.finishTask && props.finishTask(id);
+    }
+
     return (
         <div className={'table'}>
             <div className={'table-header'}>
@@ -48,11 +54,11 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                 {props.tasks?.map((item: Task, index) => (
                     <div key={`${item.id}_${item.title}_${index}`} onClick={props.onClick.bind(this, item.id)}
                          className={'table-row'}>
-                        <p>{item.title}</p>
-                        <p>{item.description}</p>
-                        {item.dueDate && <p>{item.dueDate.split(' ')[0]}</p>}
-                        <p>{item.priority}</p>
-                        {item.taskGroupName && <p>{item.taskGroupName}</p>}
+                        <p className={'column'}>{item.title}</p>
+                        <p className={'column'}>{item.description}</p>
+                        {item.dueDate && <p className={'column'}>{item.dueDate.split(' ')[0]}</p>}
+                        <p className={'priority-column'}>{item.priority}</p>
+                        {item.taskGroupName && <p className={'column'}>{item.taskGroupName}</p>}
                         {props.hasActionButtons && <div className={'action-buttons-container'}>
                             <button onClick={props.onClick.bind(this, item.id)}
                                     className={'action-button action-button-edit'}>
@@ -62,7 +68,7 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                                     className={'action-button action-button-delete'}>
                                 Delete
                             </button>
-                            <button onClick={(event) => handleButtonClick(event, item.id)}
+                            <button onClick={(event) => finishTaskHandler(event, item.id)}
                                     className={'action-button action-button-finish'}>
                                 Finish
                             </button>

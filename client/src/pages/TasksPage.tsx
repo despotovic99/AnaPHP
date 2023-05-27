@@ -46,6 +46,23 @@ const TasksPage = () => {
         }
     }
 
+    const finishTask = async (taskId: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.post('/task/finishExecutor.php', {taskId: taskId, completed: 1}, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Access-Token': token,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            });
+            console.log(response);
+            toast.success('Successfully finished!');
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+    }
+
     useEffect(() => {
         getAllTasks();
     }, [])
@@ -58,7 +75,7 @@ const TasksPage = () => {
                 </button>
             </div>
             <Table hasActionButtons={true} columns={tasksTableColumns} onClickDelete={deleteHandler}
-                   onClick={editTaskNavigationHandler}
+                   onClick={editTaskNavigationHandler} finishTask={finishTask}
                    tasks={tasks}/>
         </div>
     )
