@@ -1,32 +1,17 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import {useLocation, useNavigate} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import {UserRole} from "../common/models/user.interface";
 import {toast} from "react-toastify";
 import axios from "axios";
 
-const AddOrEditTaskGroup = () => {
-
+const AddOrEditUserRolePage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [title, setTitle] = useState<string>();
-    const [taskGroupName, setTaskGroupName] = useState('');
-    const getTaskGroup = async (id: number) => {
-        try {
-            const token = await localStorage.getItem('token');
-            const response = await axios.get(`/task-group/get.php?id=${id}`, {
-                baseURL: process.env.REACT_APP_BASE_URL,
-                headers: {
-                    'Access-Token': token
-                }
-            })
-            setTaskGroupName(response.data.data.taskGroup.name);
-        } catch (error: any) {
-            toast.error(error?.response?.data?.data?.error);
-        }
-    }
-
-
+    const [role, setRole] = useState<UserRole>({} as UserRole);
+    const [roleName, setRoleName] = useState<string>();
     const onClickSaveHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
@@ -36,27 +21,39 @@ const AddOrEditTaskGroup = () => {
                     'Access-Token': token,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
-            };
-
+            }
             if (location.state.mode === 'ADD') {
-                await axios.post('/task-group/create.php', {name: taskGroupName}, config)
+                await axios.post('/admin/createUserRole.php', {name: roleName}, config);
             } else {
-                await axios.post(`/task-group/update.php`, {name: taskGroupName, id: location.state.id}, config)
+                await axios.post('/admin/createUserRole.php', {id: location.state.roleId, name: roleName}, config);
             }
             toast.success('Successfully saved!');
-            navigate('task-groups');
+            navigate('/user-roles')
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data.error);
+        }
+    }
+
+    const getUserRole = async (id: number) => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.get(`/admin/getUserRole.php?id=${id}`, {
+                baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                    'Access-Token': token
+                }
+            });
+            setRoleName(response.data.data.role.name);
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
-
     }
 
     useEffect(() => {
         if (!location.state || !location.state.mode) return;
-        if (location.state.id) {
-            getTaskGroup(location.state.id);
+        if (location.state.roleId) {
+            getUserRole(location.state.roleId);
         }
-        setTitle(location.state.mode === 'EDIT' ? 'Edit Task Group' : 'Add Task Group');
+        setTitle(location.state.mode === 'EDIT' ? 'Edit User Role' : 'Add User Role');
     }, [])
 
     return <div className={'card'}>
@@ -69,8 +66,8 @@ const AddOrEditTaskGroup = () => {
                 <div className={'form-container'}>
                     <div className={'form-field-container'}>
                         <label>Name</label>
-                        <input className={'input-field'} type={'text'} value={taskGroupName}
-                               onChange={(event: ChangeEvent<HTMLInputElement>) => setTaskGroupName(event.target.value)}/>
+                        <input className={'input-field'} type={'text'} value={roleName}
+                               onChange={(event: ChangeEvent<HTMLInputElement>) => setRoleName(event.target.value)}/>
                     </div>
                     <button className={'save-button'} onClick={onClickSaveHandler}>Save</button>
                 </div>
@@ -78,4 +75,4 @@ const AddOrEditTaskGroup = () => {
         </div>
     </div>
 }
-export default AddOrEditTaskGroup;
+export default AddOrEditUserRolePage

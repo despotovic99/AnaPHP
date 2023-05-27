@@ -1,5 +1,5 @@
 import '../styles/DrawerContainerStyle.css'
-import {faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faGear, faObjectGroup, faSignOut, faTasks, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
@@ -47,6 +47,11 @@ const DrawerContainer = () => {
                      onClick={navigationHandler.bind(this, '/')}>
                     <FontAwesomeIcon icon={faUser} className={'icon'}/>
                     <p>Users</p>
+                </div>
+                <div className={getItemContainerClassName('/user-roles')}
+                     onClick={navigationHandler.bind(this, '/user-roles')}>
+                    <FontAwesomeIcon icon={faGear} className={'icon'}/>
+                    <p>User Roles</p>
                 </div>
                 <div className={getItemContainerClassName('/tasks')}
                      onClick={navigationHandler.bind(this, '/tasks')}>

@@ -10,6 +10,8 @@ import TaskGroupsPage from "../pages/TaskGroupsPage";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from "react-toastify";
 import AddOrEditTaskGroup from "../pages/AddOrEditTaskGroup";
+import UserRolesPage from "../pages/UserRolesPage";
+import AddOrEditUserRolePage from "../pages/AddOrEditUserRolePage";
 
 type BasicLayoutProps = {
     screenName: string
@@ -26,6 +28,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props: BasicLayoutProps) => {
                 {props.screenName === ScreenNames.taskScreen && <AddOrEditTaskPage/>}
                 {props.screenName === ScreenNames.taskGroupsScreen && <TaskGroupsPage/>}
                 {props.screenName === ScreenNames.taskGroupScreen && <AddOrEditTaskGroup/>}
+                {props.screenName === ScreenNames.userRolesScreen && <UserRolesPage/>}
+                {props.screenName === ScreenNames.userRoleScreen && <AddOrEditUserRolePage/>}
             </div>
             <ToastContainer position={"bottom-right"}/>
         </div>

@@ -1,11 +1,12 @@
 import React from "react";
 import '../styles/TableStyle.css'
-import {User} from "../common/models/user.interface";
+import {User, UserRole} from "../common/models/user.interface";
 import {Task, TaskGroup} from "../common/models/task.interface";
 
 type TableHeaderProps = {
     columns: string[]
     users?: User[]
+    userRoles?: UserRole[]
     tasks?: Task[]
     taskGroups?: TaskGroup[]
     hasActionButtons?: boolean
@@ -71,7 +72,8 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                         </div>}
                     </div>))}
                 {props.taskGroups?.map((taskGroup, index) => (
-                    <div key={`${taskGroup.id}_${taskGroup.name}_${index}`} className={'table-row'}>
+                    <div key={`${taskGroup.id}_${taskGroup.name}_${index}`} className={'table-row'}
+                         onClick={props.onClick.bind(this, taskGroup.id)}>
                         <p>{taskGroup.id}</p>
                         <p>{taskGroup.name}</p>
                         {props.hasActionButtons && <div className={'action-buttons-container'}>
@@ -86,6 +88,19 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                         </div>}
                     </div>
                 ))}
+                {props.userRoles?.map((role, index) => (
+                    <div key={`${role.id}_${role.name}_${index}`} className={'table-row'}
+                         onClick={props.onClick.bind(this, role.id)}>
+                        <p>{role.id}</p>
+                        <p>{role.name}</p>
+                        {props.hasActionButtons && <div className={'action-buttons-container'}>
+                            <button onClick={props.onClick.bind(this, role.id)}
+                                    className={'action-button action-button-edit'}>
+                                Edit
+                            </button>
+
+                        </div>}
+                    </div>))}
             </div>
         </div>)
 }

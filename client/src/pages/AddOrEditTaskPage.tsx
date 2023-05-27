@@ -154,6 +154,7 @@ const AddOrEditTaskPage = () => {
             }
             //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
+            navigate('/tasks');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -246,7 +247,7 @@ const AddOrEditTaskPage = () => {
     const saveCommentHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
-            const response = await axios.post('/comment/add.php', {
+            await axios.post('/comment/add.php', {
                 taskId: location.state.taskId,
                 content: commentText
             }, {
@@ -256,7 +257,6 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
-            console.log(response);
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);

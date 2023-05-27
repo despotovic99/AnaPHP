@@ -81,6 +81,7 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
                 }, config);
             }
             toast.success('Successfully saved!');
+            navigate('/');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
