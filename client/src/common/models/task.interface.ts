@@ -6,6 +6,10 @@ export interface Task {
     dueDate?: string,
     taskGroupName?: string
     files?: any
+    managerId?: number
+    taskGroupId?: number
+    executors?: { firstName: string, userId: number }[],
+    status?: boolean
 }
 
 export interface TaskGroup {

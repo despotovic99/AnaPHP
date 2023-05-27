@@ -50,7 +50,7 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                          className={'table-row'}>
                         <p>{item.title}</p>
                         <p>{item.description}</p>
-                        {item.dueDate && <p>{item.dueDate}</p>}
+                        {item.dueDate && <p>{item.dueDate.split(' ')[0]}</p>}
                         <p>{item.priority}</p>
                         {item.taskGroupName && <p>{item.taskGroupName}</p>}
                         {props.hasActionButtons && <div className={'action-buttons-container'}>
@@ -61,6 +61,10 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                             <button onClick={(event) => handleButtonClick(event, item.id)}
                                     className={'action-button action-button-delete'}>
                                 Delete
+                            </button>
+                            <button onClick={(event) => handleButtonClick(event, item.id)}
+                                    className={'action-button action-button-finish'}>
+                                Finish
                             </button>
                         </div>}
                     </div>))}

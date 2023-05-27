@@ -131,6 +131,7 @@
     min-height: 15vh;
     padding: 10px;
     font-size: 18px;
+    margin-bottom: 20px;
 }
 
 .all-comments-container textarea {

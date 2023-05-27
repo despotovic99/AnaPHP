@@ -26,6 +26,7 @@ const AddOrEditTaskGroup = () => {
         }
     }
 
+
     const onClickSaveHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
@@ -33,7 +34,6 @@ const AddOrEditTaskGroup = () => {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {
                     'Access-Token': token,
-                    'Content-Length': 80,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             };

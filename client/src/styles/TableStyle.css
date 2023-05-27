@@ -60,6 +60,14 @@
     background: red;
 }
 
+.action-button-finish {
+    background: #0f0f0f;
+}
+
+.action-button-done {
+    background: green;
+}
+
 .action-button:hover {
     cursor: pointer;
 }

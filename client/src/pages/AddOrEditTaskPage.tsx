@@ -14,23 +14,18 @@ const AddOrEditTaskPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [task, setTask] = useState<Task>();
+    const [task, setTask] = useState<Task>({} as Task);
     const [executors, setExecutors] = useState<User[]>([]);
     const [managers, setManagers] = useState<User[]>([])
     const [title, setTitle] = useState<string>();
     const [priorityOptions, setPriorityOptions] = useState<number[]>()
-    const [taskTitle, setTaskTitle] = useState<string>();
-    const [priority, setPriority] = useState<string>('1');
-    const [description, setDescription] = useState<string>();
     const [selectedExecutors, setSelectedExecutors] = useState<number[]>([]);
-    const [selectedManager, setSelectedManager] = useState<number>()
-    const [taskGroup, setTaskGroup] = useState<number>();
-    const [dueDate, setDueDate] = useState<string>();
     const [files, setFiles] = useState<FileList | undefined>();
     const [filesToShow, setFilesToShow] = useState<string[]>([]);
-    const [taskStatus, setTaskStatus] = useState();
+    const [taskStatus, setTaskStatus] = useState<boolean>();
     const [taskGroups, setTaskGroups] = useState<TaskGroup[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [commentText, setCommentText] = useState('');
 
     const getExecutorsAndManagers = async () => {
         try {
@@ -61,11 +56,6 @@ const AddOrEditTaskPage = () => {
         }
         setPriorityOptions(options);
     }
-
-    const handleTaskGroup = (event: ChangeEvent<HTMLSelectElement>) => {
-        setTaskGroup(parseInt(event.target.value));
-    }
-
     const handleExecutor = (optionId: number) => {
         const isSelected = selectedExecutors.includes(optionId);
         let updatedOptions;
@@ -87,11 +77,12 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
+            const executorsArray: number[] = [];
+            response.data.data.task.executors.forEach((executor: any) => executorsArray.push(executor.userId));
+            setSelectedExecutors(executorsArray);
             setTask(response.data.data.task);
             const filesFromTask: string[] = Object.values(response.data.data.task.files)
             setFilesToShow(filesFromTask);
-            const date = new Date(response.data.data.task.dueDate)
-            setDueDate(`${date.getMonth() + 1}` + '/' + date.getDate() + '/' + date.getFullYear())
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -112,32 +103,50 @@ const AddOrEditTaskPage = () => {
         }
     }
 
+    const handleFormChange = (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+        param: string,
+    ) => {
+        setTask((prevState: Task) => {
+            return {
+                ...prevState,
+                [param]: event.target.value,
+            };
+        });
+    };
+
     const onClickSaveHandler = async () => {
+
         const regex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!regex.test(dueDate ? dueDate : '')) {
+        if (!regex.test(task.dueDate ? task.dueDate : '')) {
             toast.error('Date invalid. Required format is YYYY-MM-DD');
             return;
         }
-        const data = {
-            title: taskTitle,
-            priority,
-            description,
+        const dto = {
+            ...task,
             executors: selectedExecutors,
-            taskGroupId: taskGroup,
-            dueDate,
-            files,
-            manager: selectedManager
+            priority: task.priority ? task.priority : 1,
+            files: files
         }
+
         try {
             const token = await localStorage.getItem('token');
-            await axios.post(`/task/create.php`, data, {
+            const config = {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {
                     'Access-Token': token,
                     'Content-Type': 'multipart/form-data',
-                    'Content-Length': 200
                 }
-            });
+            };
+            if (location.state.mode === 'ADD') {
+                await axios.post(`/task/create.php`, dto, config);
+            } else {
+                await axios.post('/task/update.php', {
+                    ...dto,
+                    id: location.state.taskId,
+                    status: taskStatus,
+                })
+            }
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
@@ -174,6 +183,7 @@ const AddOrEditTaskPage = () => {
 
     const handleUploadingFiles = (event: ChangeEvent<HTMLInputElement>) => {
         setFiles(event?.target?.files ? event.target.files : undefined);
+        console.log(Object.values(event?.target.files!))
         Object.values(event?.target?.files!).forEach(file => {
             setFilesToShow(prevState => [...prevState, file.name])
         })
@@ -205,6 +215,7 @@ const AddOrEditTaskPage = () => {
                 }
             });
             setComments(prevState => prevState.filter(comment => comment.id !== id));
+            toast.success('Successfully deleted!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -221,6 +232,27 @@ const AddOrEditTaskPage = () => {
                 }
             });
             setFilesToShow(prevState => prevState.filter(file => file !== fileName));
+            toast.success('Successfully deleted!');
+        } catch (error: any) {
+            toast.error(error?.response?.data?.data?.error);
+        }
+    }
+
+    const saveCommentHandler = async () => {
+        try {
+            const token = await localStorage.getItem('token');
+            const response = await axios.post('/comment/add.php', {
+                taskId: location.state.taskId,
+                content: commentText
+            }, {
+                baseURL: process.env.REACT_APP_BASE_URL,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Access-Token': token
+                }
+            });
+            console.log(response);
+            toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -251,14 +283,14 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Title</label>
                             <input type={'text'}
-                                   value={taskTitle ? taskTitle : task?.title}
-                                   onChange={(event: ChangeEvent<HTMLInputElement>) => setTaskTitle(event.currentTarget.value)}/>
+                                   value={task?.title ? task.title : ''}
+                                   onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormChange(event, 'title')}/>
                         </div>
                         <div className={'form-field-container'}>
                             <label>Priority</label>
                             <select className={'select-priority'}
-                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => setPriority(event.target.value)}
-                                    value={priority ? priority : task?.priority}>
+                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'priority')}
+                                    value={task.priority ? task.priority : ''}>
                                 {priorityOptions && priorityOptions.map((option => (<option>{option}</option>)))}
                             </select>
                         </div>
@@ -266,8 +298,8 @@ const AddOrEditTaskPage = () => {
                     </div>
                     <div className={'form-field-container'}>
                         <label>Description</label>
-                        <textarea value={description ? description : task?.description}
-                                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)}/>
+                        <textarea value={task.description ? task.description : ''}
+                                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) => handleFormChange(event, 'description')}/>
                     </div>
                     <div className={'form-fields-row'}>
                         <div className={'checkbox-container'}>
@@ -284,11 +316,12 @@ const AddOrEditTaskPage = () => {
                         </div>
                         <div className={'form-field-container'}>
                             <label>Managers</label>
-                            <select value={selectedManager}
-                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => setSelectedManager(parseInt(event.target.value))}
+                            <select value={task.managerId ? task.managerId : ''}
+                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'manager')}
                                     className={'user-select'}>
                                 {managers.length > 0 ? managers.map(((manager) => (
-                                    <option key={manager.id} value={manager.id}>{manager.firstName}</option>))) : (
+                                    <option key={manager.id} value={manager.id}
+                                            selected={task.managerId === manager.id}>{manager.firstName}</option>))) : (
                                     <option>No managers found</option>)}
                             </select>
                         </div>
@@ -297,8 +330,8 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Task Group</label>
                             <select className={'user-select'}
-                                    value={taskGroup}
-                                    onChange={handleTaskGroup}
+                                    value={task.taskGroupId ? task.taskGroupId : ''}
+                                    onChange={(event => handleFormChange(event, 'taskGroupId'))}
                             >
                                 {taskGroups.map((group, index) => (
                                     <option key={index}
@@ -308,9 +341,9 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Due Date</label>
                             <input type={"text"} className={'due-date-input'}
-                                   value={dueDate}
+                                   value={task.dueDate ? task.dueDate.split(' ')[0] : ''}
                                    placeholder={'YYYY-MM-DD'}
-                                   onChange={(event: ChangeEvent<HTMLDataElement>) => setDueDate(event.target.value)}
+                                   onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormChange(event, 'dueDate')}
                             />
                         </div>
                     </div>
@@ -334,12 +367,10 @@ const AddOrEditTaskPage = () => {
                     {location.state.mode === 'EDIT' && <div className={'radio-buttons-container'}>
                         <p className={'label'}>Task Status</p>
                         <div className={'radio-button-container'}>
-                            <label>Finished</label>
-                            <input type={'radio'} name={'task-status'}/>
-                        </div>
-                        <div className={'radio-button-container'}>
-                            <label>Canceled</label>
-                            <input type={'radio'} name={'task-status'}/>
+                            <label>Completed</label>
+                            <input
+                                onChange={(event: ChangeEvent<HTMLInputElement>) => setTaskStatus(event.target.checked)}
+                                type={'radio'} name={'task-status'}/>
                         </div>
                     </div>}
                     {location.state.mode === 'EDIT' && comments.length > 0 && <div className={'all-comments-container'}>
@@ -348,11 +379,12 @@ const AddOrEditTaskPage = () => {
                                                                                                       value={comment.content}/>
                             <button onClick={() => deleteCommentHandler(comment.id)}>Delete</button>
                         </div>))}
-
                     </div>}
                     {location.state.mode === 'EDIT' && <div className={'comment-container'}>
                         <label>Add Comment</label>
-                        <textarea/>
+                        <textarea value={commentText}
+                                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setCommentText(event.target.value)}/>
+                        <button className={'save-button'} onClick={saveCommentHandler}>Save Comment</button>
                     </div>}
                     <button className={'save-button'} onClick={onClickSaveHandler}>Save</button>
                 </div>
