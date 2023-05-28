@@ -25,7 +25,7 @@ const AddOrEditUserRolePage = () => {
             if (location.state.mode === 'ADD') {
                 await axios.post('/admin/createUserRole.php', {name: roleName}, config);
             } else {
-                await axios.post('/admin/createUserRole.php', {id: location.state.roleId, name: roleName}, config);
+                await axios.post('/admin/updateUserRole.php', {id: location.state.roleId, name: roleName}, config);
             }
             toast.success('Successfully saved!');
             navigate('/user-roles')

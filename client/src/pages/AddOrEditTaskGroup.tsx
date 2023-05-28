@@ -45,7 +45,7 @@ const AddOrEditTaskGroup = () => {
                 await axios.post(`/task-group/update.php`, {name: taskGroupName, id: location.state.id}, config)
             }
             toast.success('Successfully saved!');
-            navigate('task-groups');
+            navigate('/task-groups');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }

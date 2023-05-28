@@ -109,7 +109,6 @@ const AddOrEditTaskPage = () => {
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
         param: string,
     ) => {
-        console.log(param, event.target.value);
         setTask((prevState: Task) => {
             return {
                 ...prevState,
@@ -119,16 +118,12 @@ const AddOrEditTaskPage = () => {
     };
 
     const onClickSaveHandler = async () => {
-        console.log(task);
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(task.dueDate ? task.dueDate : '')) {
             toast.error('Date invalid. Required format is YYYY-MM-DD');
             return;
         }
-        if (filesToShow.length < 1) {
-            toast.error('Files can not be empty!');
-            return;
-        }
+
         const dto = {
             ...task,
             executors: selectedExecutors,
@@ -136,7 +131,6 @@ const AddOrEditTaskPage = () => {
             files: files,
             status: task.status
         };
-        console.log(dto);
         try {
             const token = await localStorage.getItem('token');
             const config = {
@@ -258,6 +252,7 @@ const AddOrEditTaskPage = () => {
                 }
             });
             setComments(prevState => [...prevState, {id: response.data.data.commentId, content: commentText}])
+            setCommentText('');
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
@@ -289,7 +284,7 @@ const AddOrEditTaskPage = () => {
         <div className={'detail-card-container'}>
             <div className={'card-navigation-container'}>
                 <FontAwesomeIcon onClick={() => navigate('/tasks')} className={'icon'} icon={faChevronLeft}/>
-                {title && <h2>{title}</h2>}
+                {title && <h2>{isExecutor ? 'View task' : title}</h2>}
             </div>
             <div className={'card-detail-page'}>
                 <div className={'form-container'}>

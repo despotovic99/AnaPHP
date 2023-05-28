@@ -71,10 +71,11 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                                     className={'action-button action-button-edit'}>
                                 Edit
                             </button>
-                            <button onClick={(event) => handleButtonClick(event, item.id)}
-                                    className={'action-button action-button-delete'}>
-                                Delete
-                            </button>
+                            {roleName.toLowerCase() !== 'izvrsilac' &&
+                                <button onClick={(event) => handleButtonClick(event, item.id)}
+                                        className={'action-button action-button-delete'}>
+                                    Delete
+                                </button>}
                             {roleName?.toLowerCase() === 'izvrsilac' &&
                                 <button onClick={(event) => finishTaskHandler(event, item.id)}
                                         className={`action-button ${item.completed ? 'action-button-done' : 'action-button-finish'}`}>
