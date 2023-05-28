@@ -40,7 +40,7 @@ try {
     }
 
     if ($executor && strtolower($user['userRole']) != 'izvrsilac') {
-        $query .= $from . "
+        $from .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
         $where .= " u.id=$executor AND ";
