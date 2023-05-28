@@ -331,6 +331,7 @@ const AddOrEditTaskPage = () => {
                             <select disabled={isExecutor} value={task.managerId ? task.managerId : ''}
                                     onChange={event => handleFormChange(event, 'managerId')}
                                     className={'user-select'}>
+                                <option></option>
                                 {managers.length > 0 ? managers.map(((manager) => (
                                     <option key={manager.id} value={manager.id}
                                             selected={task.managerId === manager.id}>{manager.firstName}</option>))) : (
@@ -345,6 +346,7 @@ const AddOrEditTaskPage = () => {
                                     value={task.taskGroupId ? task.taskGroupId : ''}
                                     onChange={(event => handleFormChange(event, 'taskGroupId'))}
                             >
+                                <option></option>
                                 {taskGroups.map((group, index) => (
                                     <option key={index}
                                             value={group.id}>{group?.name}</option>))}
