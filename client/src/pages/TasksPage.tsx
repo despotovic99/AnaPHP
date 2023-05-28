@@ -16,6 +16,7 @@ const TasksPage = () => {
     const [priorityOptions, setPriorityOptions] = useState<number[]>([]);
     const [executors, setExecutors] = useState<User[]>([]);
     const [priority, setPriority] = useState<number>();
+    const [selectedExecutor, setSelectedExecutor] = useState<string>();
     const dateFromRef = useRef<HTMLInputElement>(null);
     const dateToRef = useRef<HTMLInputElement>(null);
     const taskTitleRef = useRef<HTMLInputElement>(null)
@@ -119,14 +120,16 @@ const TasksPage = () => {
             if (priority) {
                 filterQuery += `&priority=${priority}`;
             }
-            const query = `?title=${taskTitleRef.current?.value ? taskTitleRef.current.value : ''}
-            &priority=${priority ? priority : ''}&dateFrom=${dateFromRef.current?.value}&dateTo=${dateToRef.current?.value}`
+            if (selectedExecutor) {
+                filterQuery += `$executor=${selectedExecutor}`
+            }
             const response = await axios.get(`/task/all.php${filterQuery}`, {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {
                     'Access-Token': token
                 }
             });
+            console.log(response);
             setTasks(response.data.data.tasks);
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
@@ -167,16 +170,20 @@ const TasksPage = () => {
                 </div>
                 <div className={'filter'}>
                     <label>Executor</label>
-                    <select>
+                    <select value={selectedExecutor}
+                            onChange={(event: ChangeEvent<HTMLSelectElement>) => setSelectedExecutor(event.target.value)}>
                         <option>Select executor</option>
-                        {executors.map(executor => (<option>{executor.firstName} {executor.lastName}</option>))}
+                        {executors.map(executor => (<option key={executor.id}
+                                                            value={executor.id}>{executor.firstName} {executor.lastName}</option>))}
                     </select>
                 </div>
                 <div className={'filter'}>
                     <label>Title</label>
                     <input ref={taskTitleRef} type={'text'}/>
                 </div>
-                <button onClick={getFilteredTasks} className={'filter-button'}>Filter</button>
+                <div className={'filter-buttons-container'}>
+                    <button onClick={getFilteredTasks} className={'filter-button'}>Filter</button>
+                </div>
             </div>
             <Table hasActionButtons={true} columns={tasksTableColumns} onClickDelete={deleteHandler}
                    onClick={editTaskNavigationHandler} finishTask={finishTask}

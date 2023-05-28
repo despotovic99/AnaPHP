@@ -146,11 +146,12 @@ const AddOrEditTaskPage = () => {
             if (location.state.mode === 'ADD') {
                 await axios.post(`/task/create.php`, dto, config);
             } else {
-                await axios.post('/task/update.php', {
+                const response = await axios.post('/task/update.php', {
                     ...dto,
                     id: location.state.taskId,
                     status: taskStatus,
-                }, config)
+                }, config);
+                console.log(response);
             }
             //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
@@ -317,7 +318,7 @@ const AddOrEditTaskPage = () => {
                                         checked={selectedExecutors.includes(executor.id)}
                                         onChange={() => handleExecutor(executor.id)}
                                     />
-                                    {executor.firstName}
+                                    {executor.firstName} {executor.lastName}
                                 </label></div>)) : (<p>No executors found</p>)}
                         </div>
                         <div className={'form-field-container'}>
