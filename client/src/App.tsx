@@ -7,6 +7,7 @@ import RegisterPage from "./pages/RegisterPage";
 import BasicLayout from "./UI/BasicLayout";
 import {ScreenNames} from "./common/constants/ScreenNames";
 import {AuthContext} from "./store/AuthContext";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path='/login' element={<LoginPage/>}/>
                 <Route path='/forgot-password' element={<ForgotPasswordPage/>}/>
                 <Route path='/register' element={<RegisterPage/>}/>
+                <Route path={'/reset-password'} element={<ResetPasswordPage/>}/>
                 <Route path={'/'}
                        element={handleAuth(ScreenNames.usersScreen)}/>
                 <Route path={'/user'} element={handleAuth(ScreenNames.userScreen)}/>

@@ -68,6 +68,11 @@
     padding-left: 100px;
 }
 
+.reset-password-button {
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
 .buttons-container h4:hover {
     cursor: pointer;
 }
