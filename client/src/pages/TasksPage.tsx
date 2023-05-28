@@ -115,13 +115,13 @@ const TasksPage = () => {
                 filterQuery += `&title=${taskTitleRef.current?.value}`;
             }
             if (dateFromRef.current?.value.length! > 1) {
-                filterQuery += `&dateFrom=${dateFromRef.current?.value}&dateTo=${dateToRef.current?.value}`;
+                filterQuery += `%from=${dateFromRef.current?.value}&to=${dateToRef.current?.value}`;
             }
             if (priority) {
                 filterQuery += `&priority=${priority}`;
             }
             if (selectedExecutor) {
-                filterQuery += `$executor=${selectedExecutor}`
+                filterQuery += `executor=${selectedExecutor}`
             }
             const response = await axios.get(`/task/all.php${filterQuery}`, {
                 baseURL: process.env.REACT_APP_BASE_URL,
@@ -164,15 +164,18 @@ const TasksPage = () => {
                     <label>Priority</label>
                     <select value={priority}
                             onChange={(event: ChangeEvent<HTMLSelectElement>) => setPriority(parseInt(event.target.value))}>
-                        <option></option>
+                        <option value={undefined}></option>
                         {priorityOptions.map(option => <option>{option}</option>)}
                     </select>
                 </div>
                 <div className={'filter'}>
                     <label>Executor</label>
                     <select value={selectedExecutor}
-                            onChange={(event: ChangeEvent<HTMLSelectElement>) => setSelectedExecutor(event.target.value)}>
-                        <option>Select executor</option>
+                            onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                                setSelectedExecutor(event.target.value);
+                                console.log(event.target.value)
+                            }}>
+                        <option></option>
                         {executors.map(executor => (<option key={executor.id}
                                                             value={executor.id}>{executor.firstName} {executor.lastName}</option>))}
                     </select>
