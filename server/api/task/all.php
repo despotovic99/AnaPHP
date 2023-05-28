@@ -45,7 +45,7 @@ try {
         $query .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
-        $where .= " u.id='%$executor%' AND ";
+        $where .= " u.id=$executor AND ";
         $groupBy = " GROUP BY id ";
     }
 
@@ -53,7 +53,7 @@ try {
         $query .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
-        if(!$where){
+        if (!$where) {
             $where = ' WHERE ';
         }
         $where .= " userId='{$user['userId']}' AND ";

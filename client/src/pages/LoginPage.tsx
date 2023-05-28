@@ -6,6 +6,8 @@ import {Login} from "../common/models/auth.interface";
 import {AuthContext} from "../store/AuthContext";
 import {loginUserRequest, sendActivationLinkRequest} from "../api/user.api";
 import {toast, ToastContainer} from "react-toastify";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faLock, faUser} from "@fortawesome/free-solid-svg-icons";
 
 
 const LoginPage = () => {
@@ -73,15 +75,14 @@ const LoginPage = () => {
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Username</label>
                 <div className={'icon-container'}>
-                    <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
-                    <input ref={usernameRef} className={'input-field'} type={'text'} placeholder={'pera123'}
-                    />
+                    <FontAwesomeIcon icon={faUser} className={'icon'}/>
+                    <input ref={usernameRef} className={'input-field'} type={'text'} placeholder={'pera123'}/>
                 </div>
             </div>
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Password</label>
                 <div className={'icon-container'}>
-                    <img src={'/assets/lock.png'} className={'icon'} alt={'lock'}/>
+                    <FontAwesomeIcon icon={faLock} className={'icon'}/>
                     <input ref={passwordRef} className={'input-field'} type={'password'} placeholder={'********'}
                     />
                 </div>

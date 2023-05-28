@@ -15,7 +15,11 @@ const TasksPage = () => {
     const [tasks, setTasks] = useState<Task[]>([])
     const [priorityOptions, setPriorityOptions] = useState<number[]>([]);
     const [executors, setExecutors] = useState<User[]>([]);
+    const [managers, setManagers] = useState<User[]>([])
     const [priority, setPriority] = useState<number>();
+    const [selectedExecutor, setSelectedExecutor] = useState<string>();
+    const [selectedManager, setSelectedManager] = useState<string>();
+    const [userRole, setUserRole] = useState<string>();
     const dateFromRef = useRef<HTMLInputElement>(null);
     const dateToRef = useRef<HTMLInputElement>(null);
     const taskTitleRef = useRef<HTMLInputElement>(null)
@@ -44,15 +48,22 @@ const TasksPage = () => {
         }
     }
 
-    const getExecutors = async () => {
+    const getExecutorsAndManagers = async () => {
         try {
             const token = await localStorage.getItem('token');
-            const response = await axios.get('/task/getUsers.php?type=izvrsilac', {
+            const executorsResponse = await axios.get('/task/getUsers.php?type=izvrsilac', {
                 baseURL: process.env.REACT_APP_BASE_URL, headers: {
                     'Access-Token': token
                 }
-            });
-            setExecutors(response.data.data.users);
+            })
+
+            const managersResponse = await axios.get('/task/getUsers.php?type=rukovodilac', {
+                baseURL: process.env.REACT_APP_BASE_URL, headers: {
+                    'Access-Token': token
+                }
+            })
+            setManagers(managersResponse.data.data.users);
+            setExecutors(executorsResponse.data.data.users);
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
@@ -85,8 +96,10 @@ const TasksPage = () => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
+            console.log(response);
             toast.success('Successfully finished!');
         } catch (error: any) {
+            console.log(error);
             toast.error(error?.response?.data?.data?.error);
         }
     }
@@ -114,13 +127,17 @@ const TasksPage = () => {
                 filterQuery += `&title=${taskTitleRef.current?.value}`;
             }
             if (dateFromRef.current?.value.length! > 1) {
-                filterQuery += `&dateFrom=${dateFromRef.current?.value}&dateTo=${dateToRef.current?.value}`;
+                filterQuery += `%from=${dateFromRef.current?.value}&to=${dateToRef.current?.value}`;
             }
             if (priority) {
                 filterQuery += `&priority=${priority}`;
             }
-            const query = `?title=${taskTitleRef.current?.value ? taskTitleRef.current.value : ''}
-            &priority=${priority ? priority : ''}&dateFrom=${dateFromRef.current?.value}&dateTo=${dateToRef.current?.value}`
+            if (selectedExecutor) {
+                filterQuery += `&executor=${selectedExecutor}`
+            }
+            if (selectedManager) {
+                filterQuery += `&manager=${selectedManager}`
+            }
             const response = await axios.get(`/task/all.php${filterQuery}`, {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {
@@ -133,18 +150,26 @@ const TasksPage = () => {
         }
     }
 
+    const getUserRole = async () => {
+        const role = await localStorage.getItem('role');
+        if (!role) return;
+        setUserRole(role);
+    }
+
     useEffect(() => {
         generatePriorityOptions();
         getAllTasks();
-        getExecutors();
+        getExecutorsAndManagers();
+        getUserRole();
     }, [])
 
     return (
         <div className={'card'}>
             <div className={'card-title-container'}>
                 <h2>Tasks</h2>
-                <button onClick={() => navigate('/task', {state: {mode: 'ADD'}})} className={'card-button'}>+ Add
-                </button>
+                {userRole?.toLowerCase() !== 'izvrsilac' &&
+                    <button onClick={() => navigate('/task', {state: {mode: 'ADD'}})} className={'card-button'}>+ Add
+                    </button>}
             </div>
             <div className={'filters-container'}>
                 <div className={'date-filters'}>
@@ -157,26 +182,43 @@ const TasksPage = () => {
                         <input ref={dateToRef} type={'text'} placeholder={'YYYY-MM-DD'}/>
                     </div>
                 </div>
-                <div className={'filter'}>
+                {userRole?.toLowerCase() !== 'izvrsilac' && <div className={'filter'}>
                     <label>Priority</label>
                     <select value={priority}
                             onChange={(event: ChangeEvent<HTMLSelectElement>) => setPriority(parseInt(event.target.value))}>
-                        <option></option>
+                        <option value={undefined}></option>
                         {priorityOptions.map(option => <option>{option}</option>)}
                     </select>
-                </div>
+                </div>}
                 <div className={'filter'}>
                     <label>Executor</label>
-                    <select>
-                        <option>Select executor</option>
-                        {executors.map(executor => (<option>{executor.firstName} {executor.lastName}</option>))}
+                    <select value={selectedExecutor}
+                            onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                                setSelectedExecutor(event.target.value);
+                            }}>
+                        <option></option>
+                        {executors.map(executor => (<option key={executor.id}
+                                                            value={executor.id}>{executor.firstName} {executor.lastName}</option>))}
                     </select>
                 </div>
+                {userRole?.toLowerCase() === 'izvrsilac' && <div className={'filter'}>
+                    <label>Manager</label>
+                    <select value={selectedManager}
+                            onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                                setSelectedManager(event.target.value);
+                            }}>
+                        <option></option>
+                        {managers.map(manager => (<option key={manager.id}
+                                                          value={manager.id}>{manager.firstName} {manager.lastName}</option>))}
+                    </select>
+                </div>}
                 <div className={'filter'}>
                     <label>Title</label>
                     <input ref={taskTitleRef} type={'text'}/>
                 </div>
-                <button onClick={getFilteredTasks} className={'filter-button'}>Filter</button>
+                <div className={'filter-buttons-container'}>
+                    <button onClick={getFilteredTasks} className={'filter-button'}>Filter</button>
+                </div>
             </div>
             <Table hasActionButtons={true} columns={tasksTableColumns} onClickDelete={deleteHandler}
                    onClick={editTaskNavigationHandler} finishTask={finishTask}

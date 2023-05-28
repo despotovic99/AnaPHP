@@ -4,6 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {toast} from "react-toastify";
 import axios from "axios";
+import '../styles/AddOrEditTaskGroupStyle.css'
 
 const AddOrEditTaskGroup = () => {
 

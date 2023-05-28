@@ -2,6 +2,8 @@ import {toast, ToastContainer} from "react-toastify";
 import React, {useRef} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faLock, faUser} from "@fortawesome/free-solid-svg-icons";
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
@@ -34,7 +36,7 @@ const ResetPasswordPage = () => {
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Password</label>
                 <div className={'icon-container'}>
-                    <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
+                    <FontAwesomeIcon icon={faUser} className={'icon'}/>
                     <input ref={passwordRef} className={'input-field'} type={'password'}
                            placeholder={'********'}/>
                 </div>
@@ -42,7 +44,7 @@ const ResetPasswordPage = () => {
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Confirmed password</label>
                 <div className={'icon-container'}>
-                    <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
+                    <FontAwesomeIcon icon={faLock} className={'icon'}/>
                     <input ref={confirmedPasswordRef} className={'input-field'} type={'password'}
                            placeholder={'********'}/>
                 </div>

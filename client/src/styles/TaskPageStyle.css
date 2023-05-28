@@ -21,6 +21,7 @@
     border-radius: 10px;
     border: 1px solid #A8AFB4;
     padding: 5px;
+    outline: none;
 }
 
 .filter {
@@ -48,4 +49,10 @@
 
 .filter-button:hover {
     cursor: pointer;
+}
+
+.filter-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

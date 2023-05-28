@@ -26,6 +26,7 @@ const AddOrEditTaskPage = () => {
     const [taskGroups, setTaskGroups] = useState<TaskGroup[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentText, setCommentText] = useState('');
+    const [isExecutor, setIsExecutor] = useState<boolean>();
 
 
     const getExecutorsAndManagers = async () => {
@@ -47,7 +48,6 @@ const AddOrEditTaskPage = () => {
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
-
     }
 
     const generatePriorityOptions = () => {
@@ -146,11 +146,12 @@ const AddOrEditTaskPage = () => {
             if (location.state.mode === 'ADD') {
                 await axios.post(`/task/create.php`, dto, config);
             } else {
-                await axios.post('/task/update.php', {
+                const response = await axios.post('/task/update.php', {
                     ...dto,
                     id: location.state.taskId,
                     status: taskStatus,
-                }, config)
+                }, config);
+                console.log(response);
             }
             //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
@@ -247,7 +248,7 @@ const AddOrEditTaskPage = () => {
     const saveCommentHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
-            await axios.post('/comment/add.php', {
+            const res = await axios.post('/comment/add.php', {
                 taskId: location.state.taskId,
                 content: commentText
             }, {
@@ -257,14 +258,23 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
+            console.log(res);
+            setComments(prevState => [...prevState, {content: commentText}])
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
         }
     }
 
+    const getUserRole = async () => {
+        const role = await localStorage.getItem('role');
+        if (!role) return;
+        setIsExecutor(role.toLowerCase() === 'izvrsilac');
+    }
+
 
     useEffect(() => {
+        getUserRole();
         getExecutorsAndManagers();
         generatePriorityOptions();
         getAllTaskGroups();
@@ -289,12 +299,14 @@ const AddOrEditTaskPage = () => {
                         <div className={'form-field-container'}>
                             <label>Title</label>
                             <input type={'text'}
+                                   disabled={isExecutor}
                                    value={task?.title ? task.title : ''}
                                    onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormChange(event, 'title')}/>
                         </div>
                         <div className={'form-field-container'}>
                             <label>Priority</label>
                             <select className={'select-priority'}
+                                    disabled={isExecutor}
                                     onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'priority')}
                                     value={task.priority ? task.priority : ''}>
                                 {priorityOptions && priorityOptions.map((option => (<option>{option}</option>)))}
@@ -304,7 +316,7 @@ const AddOrEditTaskPage = () => {
                     </div>
                     <div className={'form-field-container'}>
                         <label>Description</label>
-                        <textarea value={task.description ? task.description : ''}
+                        <textarea disabled={isExecutor} value={task.description ? task.description : ''}
                                   onChange={(event: ChangeEvent<HTMLTextAreaElement>) => handleFormChange(event, 'description')}/>
                     </div>
                     <div className={'form-fields-row'}>
@@ -313,17 +325,18 @@ const AddOrEditTaskPage = () => {
                             {executors.length > 0 ? executors.map((executor, index) => (
                                 <div className={'options-container'}><label>
                                     <input
+                                        disabled={isExecutor}
                                         type="checkbox"
                                         checked={selectedExecutors.includes(executor.id)}
                                         onChange={() => handleExecutor(executor.id)}
                                     />
-                                    {executor.firstName}
+                                    {executor.firstName} {executor.lastName}
                                 </label></div>)) : (<p>No executors found</p>)}
                         </div>
                         <div className={'form-field-container'}>
                             <label>Managers</label>
-                            <select value={task.managerId ? task.managerId : ''}
-                                    onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'manager')}
+                            <select disabled={isExecutor} value={task.managerId ? task.managerId : ''}
+                                    onChange={event => handleFormChange(event, 'managerId')}
                                     className={'user-select'}>
                                 {managers.length > 0 ? managers.map(((manager) => (
                                     <option key={manager.id} value={manager.id}
@@ -333,9 +346,9 @@ const AddOrEditTaskPage = () => {
                         </div>
                     </div>
                     <div className={'form-fields-row'}>
-                        <div className={'form-field-container'}>
+                        {!isExecutor && <div className={'form-field-container'}>
                             <label>Task Group</label>
-                            <select className={'user-select'}
+                            <select disabled={isExecutor} className={'user-select'}
                                     value={task.taskGroupId ? task.taskGroupId : ''}
                                     onChange={(event => handleFormChange(event, 'taskGroupId'))}
                             >
@@ -343,10 +356,10 @@ const AddOrEditTaskPage = () => {
                                     <option key={index}
                                             value={group.id}>{group?.name}</option>))}
                             </select>
-                        </div>
+                        </div>}
                         <div className={'form-field-container'}>
                             <label>Due Date</label>
-                            <input type={"text"} className={'due-date-input'}
+                            <input disabled={isExecutor} type={"text"} className={'due-date-input'}
                                    value={task.dueDate ? task.dueDate.split(' ')[0] : ''}
                                    placeholder={'YYYY-MM-DD'}
                                    onChange={(event: ChangeEvent<HTMLInputElement>) => handleFormChange(event, 'dueDate')}
@@ -355,7 +368,7 @@ const AddOrEditTaskPage = () => {
                     </div>
                     <div className={'form-field-container'}>
                         <label>File</label>
-                        <input multiple={true} type={'file'}
+                        <input disabled={isExecutor} multiple={true} type={'file'}
                                onChange={handleUploadingFiles}/>
                     </div>
                     {task && task.files && (<div className={'form-field-container'}>
@@ -373,7 +386,7 @@ const AddOrEditTaskPage = () => {
 
                     {location.state.mode === 'EDIT' && <div className={'form-field-container'}>
                         <label>Task status</label>
-                        <select value={task.status ? task.status : ''}
+                        <select disabled={isExecutor} value={task.status ? task.status : ''}
                                 onChange={(event: ChangeEvent<HTMLSelectElement>) => handleFormChange(event, 'status')}
                                 className={'user-select'}>
                             <option>Completed</option>
@@ -384,7 +397,7 @@ const AddOrEditTaskPage = () => {
                         <label>All comments</label>
                         {comments.map(comment => (<div className={'show-comment-container'}><textarea disabled={true}
                                                                                                       value={comment.content}/>
-                            <button onClick={() => deleteCommentHandler(comment.id)}>Delete</button>
+                            <button onClick={() => deleteCommentHandler(comment?.id!)}>Delete</button>
                         </div>))}
                     </div>}
                     {location.state.mode === 'EDIT' && <div className={'comment-container'}>
@@ -393,7 +406,7 @@ const AddOrEditTaskPage = () => {
                                   onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setCommentText(event.target.value)}/>
                         <button className={'save-button'} onClick={saveCommentHandler}>Save Comment</button>
                     </div>}
-                    <button className={'save-button'} onClick={onClickSaveHandler}>Save</button>
+                    {!isExecutor && <button className={'save-button'} onClick={onClickSaveHandler}>Save</button>}
                 </div>
             </div>
         </div>
