@@ -25,9 +25,10 @@ try {
     $db->beginTransaction();
     $statement = $db->prepare("INSERT INTO comment (content, userId, taskId) VALUES (?,?,?)");
     $statement->execute([$content, $user['id'], $taskId]);
+    $commentId = $db->lastInsertId();
     $db->commit();
+sendResponse(['message' => 'Comment added successfully','commentId'=>$commentId]);
 } catch (\Throwable $e) {
     $db->rollBack();
     badRequest('Comment not added');
 }
-sendResponse(['message' => 'Comment added successfully']);
