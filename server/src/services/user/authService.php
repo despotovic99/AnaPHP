@@ -47,11 +47,6 @@ function logoutUser($token): string|bool
     try {
         $db = Database::getConnection();
 
-        $result = $db->query("SELECT * FROM accessToken WHERE token='$token'");
-        if (!$result->fetch(PDO::FETCH_ASSOC)) {
-            return 'User is not logged in.';
-        }
-
         $db->query("DELETE FROM accessToken WHERE token='$token'");
     } catch (Exception $e) {
         return 'User is not logged out successfully.';
