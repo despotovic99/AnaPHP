@@ -25,12 +25,10 @@ try {
                  t.dueDate as dueDate,
                  t.priority as priority,
                  t.status as status,
-                 tG.name as taskGroupName
-    FROM task t  
-        INNER JOIN taskGroup tG on t.taskGroupId = tG.id ";
+                 tG.name as taskGroupName ";
 
+    $from = " FROM task t INNER JOIN taskGroup tG on t.taskGroupId = tG.id";
     $where = null;
-    $groupBy = null;
     if (
         ($dateTo && $dateFrom) ||
         $priority ||
@@ -42,15 +40,15 @@ try {
     }
 
     if ($executor && strtolower($user['userRole']) != 'izvrsilac') {
-        $query .= "
+        $query .= $from . "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
         $where .= " u.id=$executor AND ";
-        $groupBy = " GROUP BY id ";
     }
 
     if (strtolower($user['userRole']) == 'izvrsilac') {
-        $query .= "
+        $query .= ",st.completed ";
+        $from .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
         if (!$where) {
@@ -79,12 +77,10 @@ try {
         $where .= " dueDate BETWEEN '$dateFrom' AND '$dateTo' ";
     }
 
+    $query .= $from;
     if ($where) {
         $where = rtrim($where, 'AND ');
         $query .= $where;
-        if ($groupBy) {
-            $query .= $groupBy;
-        }
     }
 
     $result = $db->query($query);
