@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../src/services/user/userService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType('GET');
-canUserAccess('rukovodilac');
+canUserAccess('izvrsilac');
 
 $type = !empty($_GET['type']) ? htmlspecialchars($_GET['type']) : null;
 

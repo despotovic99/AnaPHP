@@ -11,7 +11,7 @@ $user = canUserAccess('izvrsilac');
 $dateFrom = !empty($_GET['from']) ? htmlspecialchars($_GET['from']) : '';
 $dateTo = !empty($_GET['to']) ? htmlspecialchars($_GET['to']) : '';
 $priority = !empty($_GET['priority']) ? htmlspecialchars($_GET['priority']) : '';
-$executors = !empty($_GET['executors']) ? htmlspecialchars($_GET['executors']) : '';
+$executor = !empty($_GET['executor']) ? htmlspecialchars($_GET['executor']) : '';
 $taskTitle = !empty($_GET['title']) ? htmlspecialchars($_GET['title']) : '';
 $taskGroupId = !empty($_GET['taskGroup']) ? htmlspecialchars($_GET['taskGroup']) : '';
 $manager = !empty($_GET['manager']) ? htmlspecialchars($_GET['manager']) : '';
@@ -34,18 +34,18 @@ try {
     if (
         ($dateTo && $dateFrom) ||
         $priority ||
-        $executors ||
+        $executor ||
         $taskGroupId ||
         $manager ||
         $taskTitle) {
         $where = ' WHERE ';
     }
 
-    if ($executors && strtolower($user['userRole']) != 'izvrsilac') {
+    if ($executor && strtolower($user['userRole']) != 'izvrsilac') {
         $query .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
-        $where .= " u.firstName LIKE '%$executors%' AND ";
+        $where .= " u.id='%$executor%' AND ";
         $groupBy = " GROUP BY id ";
     }
 
@@ -53,6 +53,9 @@ try {
         $query .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
+        if(!str_contains($where,'WHERE')){
+            $where = ' WHERE ';
+        }
         $where .= " userId='{$user['userId']}' AND ";
     }
 
