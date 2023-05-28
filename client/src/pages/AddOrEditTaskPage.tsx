@@ -346,7 +346,7 @@ const AddOrEditTaskPage = () => {
                         </div>
                     </div>
                     <div className={'form-fields-row'}>
-                        <div className={'form-field-container'}>
+                        {!isExecutor && <div className={'form-field-container'}>
                             <label>Task Group</label>
                             <select disabled={isExecutor} className={'user-select'}
                                     value={task.taskGroupId ? task.taskGroupId : ''}
@@ -356,7 +356,7 @@ const AddOrEditTaskPage = () => {
                                     <option key={index}
                                             value={group.id}>{group?.name}</option>))}
                             </select>
-                        </div>
+                        </div>}
                         <div className={'form-field-container'}>
                             <label>Due Date</label>
                             <input disabled={isExecutor} type={"text"} className={'due-date-input'}

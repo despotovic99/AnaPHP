@@ -2,6 +2,8 @@ import React, {useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import axios from "axios";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
 
 const ForgotPasswordPage = () => {
     const navigate = useNavigate();
@@ -31,7 +33,7 @@ const ForgotPasswordPage = () => {
             <div className={'input-field-container'}>
                 <label className={'input-field-label'}>Email</label>
                 <div className={'icon-container'}>
-                    <img src={'/assets/user.png'} alt={'user'} className={'icon'}/>
+                    <FontAwesomeIcon icon={faUser} className={'icon'}/>
                     <input ref={emailRef} className={'input-field'} type={'text'} placeholder={'pera@example.com'}/>
                 </div>
             </div>
