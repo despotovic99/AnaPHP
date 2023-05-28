@@ -1,0 +1,51 @@
+.filters-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 3vw;
+    padding: 25px 0;
+}
+
+.filters-container .date-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filters-container .date-filters .date-filter-container {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.date-filter-container input, .filter input {
+    border-radius: 10px;
+    border: 1px solid #A8AFB4;
+    padding: 5px;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter select {
+    border-radius: 10px;
+    padding: 5px;
+    background: white;
+    border: 1px solid #A8AFB4;
+    outline: none;
+}
+
+.filter-button {
+    border-radius: 10px;
+    padding: 8px 30px;
+    border: none;
+    background: #8DB6D8;
+    color: white;
+    font-size: 16px;
+}
+
+.filter-button:hover {
+    cursor: pointer;
+}
