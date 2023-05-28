@@ -13,6 +13,7 @@ $taskGroupId = getDataFromPostRequest('taskGroupId');
 $description = getDataFromPostRequest('description');
 $dueDate = getDataFromPostRequest('dueDate');
 $executors = getDataFromPostRequest('executors');
+$status = 'In Progress';
 if (!is_array($executors)) {
     badRequest('Executors must be an array.');
 }
@@ -32,9 +33,9 @@ try {
     $db->beginTransaction();
 
     $statement = $db->prepare(
-        "INSERT INTO task (title,description,dueDate,priority,taskGroupId,managerId) VALUES (?,?,?,?,?,?)"
+        "INSERT INTO task (title,description,dueDate,priority,taskGroupId,managerId,status) VALUES (?,?,?,?,?,?,?)"
     );
-    if (!$statement->execute([$title, $description, $dueDate, $priority, $taskGroupId, $manager])) {
+    if (!$statement->execute([$title, $description, $dueDate, $priority, $taskGroupId, $manager, $status])) {
         throw new Exception();
     }
     $taskId = $db->lastInsertId();

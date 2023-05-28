@@ -109,6 +109,7 @@ const AddOrEditTaskPage = () => {
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
         param: string,
     ) => {
+        console.log(param, event.target.value);
         setTask((prevState: Task) => {
             return {
                 ...prevState,
@@ -118,7 +119,7 @@ const AddOrEditTaskPage = () => {
     };
 
     const onClickSaveHandler = async () => {
-
+        console.log(task);
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!regex.test(task.dueDate ? task.dueDate : '')) {
             toast.error('Date invalid. Required format is YYYY-MM-DD');
@@ -132,8 +133,10 @@ const AddOrEditTaskPage = () => {
             ...task,
             executors: selectedExecutors,
             priority: task.priority ? task.priority : 1,
-            files: files
-        }
+            files: files,
+            status: task.status
+        };
+        console.log(dto);
         try {
             const token = await localStorage.getItem('token');
             const config = {

@@ -10,8 +10,7 @@ import {User} from "../common/models/user.interface";
 
 const TasksPage = () => {
     const navigate = useNavigate();
-    const tasksTableColumns = ['Title', 'Description', 'Due date', 'Priority', 'Task group', 'Actions'];
-
+    const tasksTableColumns = ['Title', 'Status', 'Due date', 'Priority', 'Task group', 'Actions'];
     const [tasks, setTasks] = useState<Task[]>([])
     const [priorityOptions, setPriorityOptions] = useState<number[]>([]);
     const [executors, setExecutors] = useState<User[]>([]);
@@ -26,6 +25,7 @@ const TasksPage = () => {
     const editTaskNavigationHandler = (taskId: number) => {
         navigate('/task', {state: {mode: 'EDIT', taskId}})
     }
+
     const generatePriorityOptions = () => {
         const options: number[] = []
         for (let option = 1; option <= 10; option++) {
@@ -133,7 +133,7 @@ const TasksPage = () => {
                 filterQuery += `&title=${taskTitleRef.current?.value}`;
             }
             if (dateFromRef.current?.value.length! > 1) {
-                filterQuery += `%from=${dateFromRef.current?.value}&to=${dateToRef.current?.value}`;
+                filterQuery += `&from=${dateFromRef.current?.value}&to=${dateToRef.current?.value}`;
             }
             if (priority) {
                 filterQuery += `&priority=${priority}`;

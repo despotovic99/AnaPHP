@@ -62,7 +62,7 @@ const Table: React.FC<TableHeaderProps> = (props: TableHeaderProps) => {
                     <div key={`${item.id}_${item.title}_${index}`} onClick={props.onClick.bind(this, item.id)}
                          className={'table-row'}>
                         <p className={'column'}>{item.title}</p>
-                        <p className={'column'}>{item.description}</p>
+                        <p className={'column'}>{item.status}</p>
                         {item.dueDate && <p className={'column'}>{item.dueDate.split(' ')[0]}</p>}
                         <p className={'priority-column'}>{item.priority}</p>
                         {item.taskGroupName && <p className={'column'}>{item.taskGroupName}</p>}
