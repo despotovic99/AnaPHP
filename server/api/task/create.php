@@ -24,6 +24,9 @@ if ($priority < 1 || $priority > 10) {
 }
 $manager = getDataFromPostRequest('manager', false);
 if (!$manager) {
+    if ($user['userRole'] == 'Admin') {
+        badRequest('Admin cannot be manager.');
+    }
     $manager = $user['userId'];
 }
 
@@ -48,8 +51,9 @@ try {
         }
     }
     $folderName .= '-' . $taskId;
-    storeTaskFiles($folderName, $_FILES['files']);
-
+    if (!empty($_FILES['files'])) {
+        storeTaskFiles($folderName, $_FILES['files']);
+    }
     $db->commit();
 } catch (\Throwable $exception) {
     $db->rollBack();
