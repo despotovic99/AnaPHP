@@ -40,6 +40,22 @@ try {
         throw new Exception();
     }
 
+    $statement = $db->prepare(
+        "DELETE FROM selectedTask WHERE taskId=?"
+    );
+    if (!$statement->execute([$id])) {
+        throw new Exception();
+    }
+
+    foreach ($executors as $executor) {
+        $statement = $db->prepare(
+            "INSERT INTO selectedTask (userId,taskId) VALUES (?,?)"
+        );
+        if (!$statement->execute([$executor, $id])) {
+            throw new Exception();
+        }
+    }
+
     if (!empty($_FILES['files'])) {
         storeTaskFiles("task-$id", $_FILES['files']);
     }
