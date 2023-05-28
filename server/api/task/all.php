@@ -53,7 +53,7 @@ try {
         $query .= "
         INNER JOIN selectedTask st ON t.id = st.taskId
         INNER JOIN user u on st.userId = u.id ";
-        if(!str_contains($where,'WHERE')){
+        if(!$where){
             $where = ' WHERE ';
         }
         $where .= " userId='{$user['userId']}' AND ";

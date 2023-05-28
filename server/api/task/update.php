@@ -40,7 +40,9 @@ try {
         throw new Exception();
     }
 
-    storeTaskFiles("task-$id", $_FILES['files']);
+    if (!empty($_FILES['files'])) {
+        storeTaskFiles("task-$id", $_FILES['files']);
+    }
 
     $db->commit();
 } catch (Exception $exception) {
