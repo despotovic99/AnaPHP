@@ -20,8 +20,8 @@ export interface TaskGroup {
 }
 
 export interface Comment {
-    id: number;
+    id?: number;
     content: string;
-    userId: number,
-    taskId: number
+    userId?: number,
+    taskId?: number
 }
