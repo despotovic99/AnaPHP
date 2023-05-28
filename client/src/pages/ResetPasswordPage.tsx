@@ -19,7 +19,6 @@ const ResetPasswordPage = () => {
                 confirmedPassword: confirmedPasswordRef.current?.value,
                 token: token
             }
-            console.log(token);
             await axios.post('/resetPassword.php', dto, {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {

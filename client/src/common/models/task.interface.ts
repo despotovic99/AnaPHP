@@ -10,6 +10,7 @@ export interface Task {
     taskGroupId?: number
     executors?: { firstName: string, userId: number }[],
     status?: string
+    completed?: number
 }
 
 export interface TaskGroup {

@@ -22,7 +22,6 @@ const ForgotPasswordPage = () => {
             });
             toast.success('Password reset link sent! Check your email!');
         } catch (error: any) {
-            console.log(error);
             toast.error(error?.response?.data?.data?.error);
         }
         //TODO call api

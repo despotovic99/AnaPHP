@@ -89,17 +89,24 @@ const TasksPage = () => {
     const finishTask = async (taskId: number) => {
         try {
             const token = await localStorage.getItem('token');
-            const response = await axios.post('/task/finishExecutor.php', {taskId: taskId, completed: 1}, {
+            await axios.post('/task/finishExecutor.php', {taskId: taskId, completed: 1}, {
                 baseURL: process.env.REACT_APP_BASE_URL,
                 headers: {
                     'Access-Token': token,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            console.log(response);
+            const updatedTasks = [...tasks];
+            const task = tasks.find(item => item.id === taskId);
+            if (!task) return;
+            const updatedTask = {
+                ...task,
+                completed: 1
+            };
+            const updatedArray = updatedTasks.map(item => item.id === taskId ? updatedTask : item);
+            setTasks(updatedArray);
             toast.success('Successfully finished!');
         } catch (error: any) {
-            console.log(error);
             toast.error(error?.response?.data?.data?.error);
         }
     }
@@ -108,7 +115,6 @@ const TasksPage = () => {
         try {
 
             if ((dateFromRef.current?.value && !dateToRef.current?.value) || (!dateFromRef.current?.value && dateToRef.current?.value)) {
-                console.log('s')
                 toast.error('You must select date to and date from!');
                 return;
             }
@@ -162,6 +168,7 @@ const TasksPage = () => {
         getExecutorsAndManagers();
         getUserRole();
     }, [])
+
 
     return (
         <div className={'card'}>

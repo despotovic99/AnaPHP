@@ -146,12 +146,11 @@ const AddOrEditTaskPage = () => {
             if (location.state.mode === 'ADD') {
                 await axios.post(`/task/create.php`, dto, config);
             } else {
-                const response = await axios.post('/task/update.php', {
+                await axios.post('/task/update.php', {
                     ...dto,
                     id: location.state.taskId,
                     status: taskStatus,
                 }, config);
-                console.log(response);
             }
             //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
@@ -191,7 +190,6 @@ const AddOrEditTaskPage = () => {
 
     const handleUploadingFiles = (event: ChangeEvent<HTMLInputElement>) => {
         setFiles(event?.target?.files ? event.target.files : undefined);
-        console.log(Object.values(event?.target.files!))
         Object.values(event?.target?.files!).forEach(file => {
             setFilesToShow(prevState => [...prevState, file.name])
         })
@@ -248,7 +246,7 @@ const AddOrEditTaskPage = () => {
     const saveCommentHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
-            const res = await axios.post('/comment/add.php', {
+            await axios.post('/comment/add.php', {
                 taskId: location.state.taskId,
                 content: commentText
             }, {
@@ -258,7 +256,6 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
-            console.log(res);
             setComments(prevState => [...prevState, {content: commentText}])
             toast.success('Successfully saved!');
         } catch (error: any) {

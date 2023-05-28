@@ -28,8 +28,7 @@ const DrawerContainer = () => {
         try {
             const token = await localStorage.getItem('token');
             if (!token) return;
-            const response = await logoutUserRequest(token);
-            console.log(response);
+            await logoutUserRequest(token);
             await localStorage.clear();
             navigate('/login');
         } catch (error: any) {

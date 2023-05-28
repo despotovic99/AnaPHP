@@ -44,9 +44,7 @@ const AddOrEditUserPage: React.FC<AddOrEditUserPageProps> = (props: AddOrEditUse
             })
             setUser(response.data.data.users[0]);
             setSelectedRole(response.data.data.users[0].roleId);
-            console.log(response.data.data.users[0].roleId)
         } catch (error: any) {
-            console.log(error)
             toast.error(error?.response?.data?.data?.error);
         }
     }
