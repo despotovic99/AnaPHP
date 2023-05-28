@@ -16,6 +16,8 @@ try {
 
     deleteFolder(__DIR__ . '/../../uploads/task-' . $id);
 
+    $statement = $db->prepare("DELETE FROM selectedTask WHERE taskId=?");
+    $statement->execute([$id]);
     $statement = $db->prepare("DELETE FROM task WHERE id=?");
     $statement->execute([$id]);
 
