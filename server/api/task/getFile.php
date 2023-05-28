@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../src/services/file/fileService.php';
 require_once __DIR__ . '/../../src/db/Database.php';
 
 checkRequestType('GET');
-//$user = canUserAccess('izvrsilac');
+$user = canUserAccess('izvrsilac');
 
 $id = htmlspecialchars($_GET['id']);
 $fileName = htmlspecialchars($_GET['fileName']);
