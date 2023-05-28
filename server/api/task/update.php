@@ -24,8 +24,11 @@ if ($priority < 1 || $priority > 10) {
     badRequest('Priority must be 1-10');
 }
 
-$manager = getDataFromPostRequest('manager', false);
+$manager = getDataFromPostRequest('managerId', false);
 if (!$manager) {
+    if ($user['userRole'] == 'Admin') {
+        badRequest('Admin cannot be manager.');
+    }
     $manager = $user['userId'];
 }
 
