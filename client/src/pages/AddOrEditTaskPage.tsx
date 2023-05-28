@@ -246,7 +246,7 @@ const AddOrEditTaskPage = () => {
     const saveCommentHandler = async () => {
         try {
             const token = await localStorage.getItem('token');
-            await axios.post('/comment/add.php', {
+            const response = await axios.post('/comment/add.php', {
                 taskId: location.state.taskId,
                 content: commentText
             }, {
@@ -256,7 +256,7 @@ const AddOrEditTaskPage = () => {
                     'Access-Token': token
                 }
             });
-            setComments(prevState => [...prevState, {content: commentText}])
+            setComments(prevState => [...prevState, {id: response.data.data.commentId, content: commentText}])
             toast.success('Successfully saved!');
         } catch (error: any) {
             toast.error(error?.response?.data?.data?.error);
