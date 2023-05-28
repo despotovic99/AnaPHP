@@ -152,10 +152,8 @@ const AddOrEditTaskPage = () => {
                 await axios.post('/task/update.php', {
                     ...dto,
                     id: location.state.taskId,
-                    status: taskStatus,
                 }, config);
             }
-            //TODO check what to do when task is initially loaded and no files selected
             toast.success('Successfully saved!');
             navigate('/tasks');
         } catch (error: any) {
