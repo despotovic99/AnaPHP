@@ -12,9 +12,9 @@ $title = getDataFromPostRequest('title');
 $taskGroupId = getDataFromPostRequest('taskGroupId');
 $description = getDataFromPostRequest('description');
 $dueDate = getDataFromPostRequest('dueDate');
-$executors = getDataFromPostRequest('executors');
+$executors = getDataFromPostRequest('executors',false);
 $status = 'In Progress';
-if (!is_array($executors)) {
+if (!empty($executors) && !is_array($executors)) {
     badRequest('Executors must be an array.');
 }
 

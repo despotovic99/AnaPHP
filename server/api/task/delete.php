@@ -18,6 +18,10 @@ try {
 
     $statement = $db->prepare("DELETE FROM selectedTask WHERE taskId=?");
     $statement->execute([$id]);
+
+    $statement = $db->prepare("DELETE FROM comment WHERE taskId=?");
+    $statement->execute([$id]);
+
     $statement = $db->prepare("DELETE FROM task WHERE id=?");
     $statement->execute([$id]);
 
