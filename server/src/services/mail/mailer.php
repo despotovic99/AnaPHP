@@ -16,10 +16,10 @@ function getMailer(): PHPMailer
     $mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mailer->Port = 587;
 
-    $mailer->Username = 'task.management.ana@gmail.com';
-    $mailer->Password = 'aatakkygwcvdvnsq';
+    $mailer->Username = '';
+    $mailer->Password = '';
 
-    $mailer->setFrom('task.management.ana@gmail.com', 'Task Management App');
+    $mailer->setFrom('', 'Task Management App');
 
     return $mailer;
 }

@@ -4,7 +4,7 @@ services:
   server:
     build:
       context: ./docker/bin/php
-    container_name: 'ana_php'
+    container_name: 'task_management_php'
     restart: 'always'
     ports:
       - "80:80"
@@ -18,11 +18,11 @@ services:
       - ./docker/logs/apache2:/var/log/apache2
     environment:
       APACHE_DOCUMENT_ROOT: /var/www/html
-      MYSQL_ROOT_PASSWORD: 'anaphp'
+      MYSQL_ROOT_PASSWORD: 'taskmanagement'
   database:
     build:
       context: "./docker/bin/mysql"
-    container_name: 'ana_mysql'
+    container_name: 'task_management_mysql'
     restart: 'always'
     ports:
       - "3306:3306"
@@ -30,5 +30,5 @@ services:
       - ./docker/data/mysql:/var/lib/mysql
       - ./docker/logs/mysql:/var/log/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 'anaphp'
-      MYSQL_DATABASE: 'anaphp'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'taskmanagement'
