@@ -1,0 +1,17 @@
+.layout-container {
+    display: flex;
+}
+
+.layout-card {
+    flex-grow: 1;
+    min-height: 100vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    background: #EFEFED;
+}
+
+.layout-top-stripe {
+    height: 4vw;
+    background: #1669BD;
+}

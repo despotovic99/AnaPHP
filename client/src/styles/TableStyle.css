@@ -1,0 +1,83 @@
+.table {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 0 15px 20px 15px;
+    min-width: 90%;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px 15px 15px;
+    border-bottom: 3px solid #EFEFED;
+}
+
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+}
+
+.table-row:nth-child(odd) {
+    background: white;
+}
+
+.table-row:nth-child(even) {
+    background: #EFEFED;
+}
+
+.table-row:hover {
+    cursor: pointer;
+    background: #EFEFED;
+}
+
+
+.table-row .action-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+.action-buttons-container .action-button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.action-button-edit {
+    background: #1669BD;
+
+}
+
+.action-button-delete {
+    background: red;
+}
+
+.action-button-finish {
+    background: #0f0f0f;
+}
+
+.action-button-done {
+    background: green;
+}
+
+.action-button:hover {
+    cursor: pointer;
+}
+
+.column {
+    min-width: 6vw;
+    max-width: 14vw;
+}
+
+.priority-column {
+    width: 3vw;
+    text-align: center;
+}
